@@ -12,10 +12,7 @@ const connectDatabase = () => {
     })
     .then((data) =>
       console.log(`DB connection succesfull :${data.connection.host} 💽💾💾💾`)
-    )
-    .catch((err) => {
-      console.log("MDB ERR :", err);
-    });
+    );
 };
 
 module.exports = connectDatabase;

@@ -13,8 +13,8 @@ router.route("/product").get(getAllProduct);
 router.route("/product/new").post(createProduct);
 router
   .route("/product/:id")
-  .get(getProductDetails)
   .put(updateProduct)
-  .delete(deleteProduct);
+  .delete(deleteProduct)
+  .get(getProductDetails);
 
 module.exports = router;
