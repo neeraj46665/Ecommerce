@@ -11,7 +11,7 @@ const connectDatabase = () => {
       // useUnifiedTopology: true,
     })
     .then((data) =>
-      console.log(`DB connection succesfull :${data.connection.host} 💽💾💾💾`)
+      console.log(`DB connection succesfull : LocalHost 💾💽💽💽💽💽💾`)
     );
 };
 

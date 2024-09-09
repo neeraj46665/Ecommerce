@@ -45,11 +45,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  // user: {
-  //   type: mongoose.Schema.ObjectId,
-  //   ref: "User",
-  //   required: [true, "Please enter the user"],
-  // },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: [true, "Please enter the user"],
+  },
   reviews: [
     {
       // user: {
