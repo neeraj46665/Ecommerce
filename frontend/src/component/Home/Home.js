@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { PiMouseScroll } from "react-icons/pi";
-// import ProductCard from "./ProductCard.js";
-// import MetaData from "../layout/MetaData";
-// import { clearErrors, getProduct } from "../../actions/productAction";
-// import { useSelector } from "react-redux";
+import ProductCard from "./ProductCard.js";
+import MetaData from "../layout/MetaData";
+import { getProduct, clearErrors } from "../../actions/productAction";
+import { useSelector, useDispatch } from "react-redux";
+
 // import Loader from "../layout/Loader/Loader";
 // import { useAlert } from "react-alert";
 
@@ -11,18 +12,19 @@ import "./Home.css";
 
 const Home = () => {
   // const alert = useAlert();
-  // const dispatch = useDispatch();
-  // const { products } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const { products, error } = useSelector((state) => state.products);
 
-  // useEffect(() => {
-  //   if (error) {
-  //     alert.error(error);
-  //     dispatch(clearErrors());
-  //   }
-  //   dispatch(getProduct());
-  // }, [dispatch, error, alert]);
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+    dispatch(getProduct());
+  }, [dispatch, error, alert]);
   return (
     <Fragment>
+      <MetaData title="E-Commerce" />
       <div className="banner">
         <p>Welcome to Ecommerce</p>
         <h1>FIND AMAZING PRODUCTS BELOW</h1>
@@ -37,10 +39,10 @@ const Home = () => {
       <h2 className="homeHeading">Featured Products</h2>
 
       <div className="container" id="container">
-        {/* {products &&
+        {products &&
           products.map((product) => (
             <ProductCard key={product._id} product={product} />
-          ))} */}
+          ))}
       </div>
     </Fragment>
   );

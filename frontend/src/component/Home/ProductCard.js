@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Rating } from "@material-ui/lab";
+
+import Rating from "@mui/material/Rating";
+import ReactStars from "react-rating-stars-component";
 
 const ProductCard = ({ product }) => {
   const options = {
@@ -13,7 +15,7 @@ const ProductCard = ({ product }) => {
       <img src={product.images[0].url} alt={product.name} />
       <p>{product.name}</p>
       <div>
-        <Rating {...options} />{" "}
+        <ReactStars {...options} />
         <span className="productCardSpan">
           {" "}
           ({product.numOfReviews} Reviews)
