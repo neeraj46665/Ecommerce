@@ -27,7 +27,7 @@ exports.getProductDetails = catchAsyncError(async (req, res, next) => {
 });
 // Get All product
 exports.getAllProduct = catchAsyncError(async (req, res) => {
-  const resultPerPage = 5;
+  const resultPerPage = 8;
   const productCount = await Product.countDocuments();
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
@@ -40,6 +40,16 @@ exports.getAllProduct = catchAsyncError(async (req, res) => {
     results: allProducts.length,
     allProducts,
     productCount,
+  });
+});
+
+// Get All Product (Admin)
+exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    success: true,
+    products,
   });
 });
 

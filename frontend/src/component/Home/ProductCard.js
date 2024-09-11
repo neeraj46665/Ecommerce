@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // import Rating from "@mui/material/Rating";
 import ReactStars from "react-rating-stars-component";
 
-const ProductCard = ({ product }) => {
+const ProductCard = (product) => {
   const options = {
     value: product.ratings,
     readOnly: true,
