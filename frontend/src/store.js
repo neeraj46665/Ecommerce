@@ -1,6 +1,6 @@
-import { combineReducers, applyMiddleware } from "redux";
+import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { thunk } from "redux-thunk";
+// import { thunk } from "redux-thunk";
 // import { composeWithDevTools } from "@redux-devtools/extension";
 import {
   //   newProductReducer,
@@ -61,13 +61,13 @@ let initialState = {
   },
 };
 
-const middleware = [thunk];
+// const middleware = [thunk];
 
 // Configure the store with the rootReducer and initial state
 const store = configureStore({
   reducer,
-  preloadedState: initialState,
-  devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools in development mode only
+  initialState,
+  // devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools in development mode only
 });
 
 export default store;

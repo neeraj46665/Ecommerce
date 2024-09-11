@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import Rating from "@mui/material/Rating";
+// import Rating from "@mui/material/Rating";
 import ReactStars from "react-rating-stars-component";
 
 const ProductCard = ({ product }) => {

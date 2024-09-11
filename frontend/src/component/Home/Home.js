@@ -21,7 +21,7 @@ const Home = () => {
       dispatch(clearErrors());
     }
     dispatch(getProduct());
-  }, [dispatch, error, alert]);
+  }, [dispatch, error]);
   return (
     <Fragment>
       <MetaData title="E-Commerce" />
