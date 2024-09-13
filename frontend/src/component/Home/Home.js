@@ -5,11 +5,16 @@ import MetaData from "../layout/MetaData";
 import { getProduct, clearErrors } from "../../actions/productAction";
 import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader/Loader.js";
-
-// import Loader from "../layout/Loader/Loader";
-// import { useAlert } from "react-alert";
-
 import "./Home.css";
+
+// const product = {
+//   name: "Blue TShirt",
+//   images: [{ url: "https://i.ibb.co/DRST11n/1.webp" }],
+//   price: "$3000",
+//   _id: "nitin kumar",
+//   // value: 2.5,
+//   ratings: 3,
+// };
 
 const Home = () => {
   // const alert = useAlert();
