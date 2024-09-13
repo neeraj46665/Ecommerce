@@ -46,7 +46,7 @@ export const productsReducer = (state = { products: [] }, action) => {
       return {
         //returning state
         loading: false,
-        product: action.payload.products, //<< (you have to use product or products) goes to redux-state
+        products: action.payload.products,
         productsCount: action.payload.productsCount,
         resultPerPage: action.payload.resultPerPage,
         filteredProductsCount: action.payload.filteredProductsCount,
