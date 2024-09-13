@@ -10,8 +10,7 @@ import "./Home.css";
 const Home = () => {
   // const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, product, error } = useSelector((state) => state.products);
-  // console.log(products);
+  const { loading, error, product } = useSelector((state) => state.products);
 
   useEffect(() => {
     if (error) {

@@ -44,8 +44,9 @@ export const productsReducer = (state = { products: [] }, action) => {
       };
     case ALL_PRODUCT_SUCCESS:
       return {
+        //returning state
         loading: false,
-        product: action.payload.products,
+        product: action.payload.products, //<< (you have to use product or products) goes to redux-state
         productsCount: action.payload.productsCount,
         resultPerPage: action.payload.resultPerPage,
         filteredProductsCount: action.payload.filteredProductsCount,

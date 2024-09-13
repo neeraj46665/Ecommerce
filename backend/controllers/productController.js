@@ -34,11 +34,11 @@ exports.getAllProduct = catchAsyncError(async (req, res) => {
     .filter()
     .pagination(resultPerPage);
 
-  const allProducts = await apiFeatures.query;
+  const products = await apiFeatures.query;
   res.status(200).json({
     success: true,
-    results: allProducts.length,
-    allProducts,
+    results: products.length,
+    products,
     productCount,
   });
 });
