@@ -7,19 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader/Loader.js";
 import "./Home.css";
 
-// const product = {
-//   name: "Blue TShirt",
-//   images: [{ url: "https://i.ibb.co/DRST11n/1.webp" }],
-//   price: "$3000",
-//   _id: "nitin kumar",
-//   // value: 2.5,
-//   ratings: 3,
-// };
-
 const Home = () => {
   // const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, products, error } = useSelector((state) => state.products);
+  const { loading, product, error } = useSelector((state) => state.products);
+  // console.log(products);
 
   useEffect(() => {
     if (error) {
@@ -49,8 +41,8 @@ const Home = () => {
           <h2 className="homeHeading">Featured Products</h2>
 
           <div className="container" id="container">
-            {products &&
-              products.map((product) => (
+            {product &&
+              product.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>
