@@ -10,7 +10,7 @@ import "./Home.css";
 const Home = () => {
   // const alert = useAlert();
   const dispatch = useDispatch();
-  const { loading, error, products } = useSelector((state) => state.products);
+  const { loading, error, product } = useSelector((state) => state.products);
 
   useEffect(() => {
     if (error) {
@@ -40,8 +40,8 @@ const Home = () => {
           <h2 className="homeHeading">Featured Products</h2>
 
           <div className="container" id="container">
-            {products &&
-              products.map((product) => (
+            {product &&
+              product.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>
