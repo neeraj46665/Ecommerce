@@ -2,6 +2,7 @@ import "./App.css";
 import Header from "./component/layout/Header/Header";
 import Footer from "./component/layout/Footer/Footer";
 import Home from "./component/Home/Home";
+import ProductDetails from "./component/Product/ProductDetails.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
 import React from "react";
 import webFont from "webfontloader";
@@ -19,9 +20,9 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        {" "}
         {/* Use Routes instead of directly using Route */}
         <Route path="/" element={<Home />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
       </Routes>
       <Footer />
     </Router>

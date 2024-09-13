@@ -10,7 +10,7 @@ import "./Home.css";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { loading, error, product } = useSelector((state) => state.products);
+  const { loading, error, products } = useSelector((state) => state.products);
   const isInitialMount = useRef(true); // Track the initial render
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const Home = () => {
       isInitialMount.current = false; // Set to false after the first render
 
       // Fetch products only if they are not already loaded
-      if (!product || product.length === 0) {
+      if (!products || products.length === 0) {
         dispatch(getProduct());
       }
     } else {
@@ -29,7 +29,7 @@ const Home = () => {
         dispatch(clearErrors());
       }
     }
-  }, [dispatch, error, product]);
+  }, [dispatch, error, products]);
   return (
     <Fragment>
       {loading ? (
@@ -51,8 +51,8 @@ const Home = () => {
           <h2 className="homeHeading">Featured Products</h2>
 
           <div className="container" id="container">
-            {product &&
-              product.map((product) => (
+            {products &&
+              products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>

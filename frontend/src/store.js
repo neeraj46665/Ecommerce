@@ -1,9 +1,13 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
-import { productsReducer } from "./reducers/productReducer";
+import {
+  productsReducer,
+  productDetailsReducer,
+} from "./reducers/productReducer";
 // Combine all reducers into a single root reducer
 const reducer = combineReducers({
   products: productsReducer,
+  productDetails: productDetailsReducer,
 });
 
 // Define the initial state

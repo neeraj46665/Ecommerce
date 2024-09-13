@@ -39,14 +39,16 @@ export const productsReducer = (state = { products: [] }, action) => {
     case ALL_PRODUCT_REQUEST:
     case ADMIN_PRODUCT_REQUEST:
       return {
+        ...state, // Keep existing state properties
         loading: true,
-        products: [],
+        products: [], // Reset products array when a request is made
       };
+
     case ALL_PRODUCT_SUCCESS:
       return {
-        //returning state
+        ...state, // Keep existing state properties
         loading: false,
-        product: action.payload.products,
+        products: action.payload.products, // Store products array from payload
         productsCount: action.payload.productsCount,
         resultPerPage: action.payload.resultPerPage,
         filteredProductsCount: action.payload.filteredProductsCount,
@@ -54,23 +56,27 @@ export const productsReducer = (state = { products: [] }, action) => {
 
     case ADMIN_PRODUCT_SUCCESS:
       return {
+        ...state, // Keep existing state properties
         loading: false,
-        products: action.payload,
+        products: action.payload, // Store products array from payload
       };
+
     case ALL_PRODUCT_FAIL:
     case ADMIN_PRODUCT_FAIL:
       return {
+        ...state, // Keep existing state properties
         loading: false,
-        error: action.payload,
+        error: action.payload, // Store the error from payload
       };
 
     case CLEAR_ERRORS:
       return {
-        ...state,
-        error: null,
+        ...state, // Keep existing state properties
+        error: null, // Clear the error
       };
+
     default:
-      return state;
+      return state; // Return current state for any unhandled action
   }
 };
 
@@ -160,27 +166,32 @@ export const productDetailsReducer = (state = { product: {} }, action) => {
   switch (action.type) {
     case PRODUCT_DETAILS_REQUEST:
       return {
-        loading: true,
-        ...state,
+        loading: true, // Set loading to true when making a request
+        ...state, // Keep existing state properties
       };
+
     case PRODUCT_DETAILS_SUCCESS:
       return {
-        loading: false,
-        product: action.payload,
+        ...state, // Preserve other properties like error if present
+        loading: false, // Set loading to false after success
+        product: action.payload, // Update product with payload data
       };
+
     case PRODUCT_DETAILS_FAIL:
       return {
-        loading: false,
-        error: action.payload,
+        ...state, // Preserve other state properties
+        loading: false, // Set loading to false after failure
+        error: action.payload, // Store error from the payload
       };
 
     case CLEAR_ERRORS:
       return {
-        ...state,
-        error: null,
+        ...state, // Preserve other state properties
+        error: null, // Clear error
       };
+
     default:
-      return state;
+      return state; // Return the current state for any unhandled action
   }
 };
 
