@@ -1,16 +1,19 @@
 import React, { useState, Fragment } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import MetaData from "../layout/MetaData";
 import "./Search.css";
 
-const Search = ({ history }) => {
+const Search = () => {
   const [keyword, setKeyword] = useState("");
+  const navigate = useNavigate(); // Use useNavigate instead of history
 
   const searchSubmitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      history.push(`/products/${keyword}`);
+      navigate(`/products/${keyword}`); // Use navigate for navigation
+      console.log("Submitted keyword:", keyword); // Log the keyword to check its value
     } else {
-      history.push("/products");
+      navigate("/products");
     }
   };
 
@@ -21,7 +24,8 @@ const Search = ({ history }) => {
         <input
           type="text"
           placeholder="Search a Product ..."
-          onChange={(e) => setKeyword(e.target.value)}
+          value={keyword} // Bind the input value to the keyword state
+          onChange={(e) => setKeyword(e.target.value)} // Update the state on change
         />
         <input type="submit" value="Search" />
       </form>

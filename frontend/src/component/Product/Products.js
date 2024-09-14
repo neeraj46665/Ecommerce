@@ -9,7 +9,7 @@ import Slider from "@mui/material/Slider";
 import { toast } from "react-toastify";
 import Typography from "@mui/material/Typography";
 import MetaData from "../layout/MetaData";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const categories = [
   "Laptop",
@@ -28,6 +28,7 @@ const Products = () => {
   const [category, setCategory] = useState("");
   const [ratings, setRatings] = useState(0);
 
+  const { keyword } = useParams();
   const {
     products,
     loading,
@@ -36,17 +37,6 @@ const Products = () => {
     resultPerPage,
     filteredProductsCount,
   } = useSelector((state) => state.products);
-
-  const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-  };
-
-  const query = useQuery();
-  const keyword = query.get("keyword"); // Correct way to retrieve the keyword
-
-  // console.log("Location object:", useLocation()); // Log the full location object
-  //{pathname: '/products', search: '', hash: '', state: null, key:
-  // console.log("Keyword for products route:", keyword); // Log the keyword value //null
 
   const setCurrentPageNo = (e) => {
     setCurrentPage(e);
@@ -61,6 +51,8 @@ const Products = () => {
       toast.error(error);
       dispatch(clearErrors());
     }
+
+    // console.log("keyword : ", keyword);
 
     dispatch(getProduct(keyword || "", currentPage, price, category, ratings));
   }, [dispatch, keyword, currentPage, price, category, ratings, error]);
