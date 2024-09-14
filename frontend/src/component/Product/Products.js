@@ -44,10 +44,9 @@ const Products = () => {
   const query = useQuery();
   const keyword = query.get("keyword"); // Correct way to retrieve the keyword
 
-  console.log("Location object:", useLocation()); // Log the full location object
+  // console.log("Location object:", useLocation()); // Log the full location object
   //{pathname: '/products', search: '', hash: '', state: null, key:
-
-  console.log("Keyword for products route:", keyword); // Log the keyword value //null
+  // console.log("Keyword for products route:", keyword); // Log the keyword value //null
 
   const setCurrentPageNo = (e) => {
     setCurrentPage(e);
@@ -58,13 +57,12 @@ const Products = () => {
   };
 
   useEffect(() => {
-    console.log("Keyword in useEffect:", keyword); // Log to see keyword during useEffect
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
     }
 
-    dispatch(getProduct(keyword, currentPage, price, category, ratings));
+    dispatch(getProduct(keyword || "", currentPage, price, category, ratings));
   }, [dispatch, keyword, currentPage, price, category, ratings, error]);
 
   let count = filteredProductsCount;
