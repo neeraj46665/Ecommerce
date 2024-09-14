@@ -1,3 +1,4 @@
+import { FaUserCircle, FaSearch, FaShoppingCart } from "react-icons/fa";
 import React from "react";
 import { ReactNavbar } from "overlay-navbar";
 import logo from "../../../images/logo.png";
@@ -26,13 +27,25 @@ const options = {
   nav4justifyContent: "flex-start",
   link1ColorHover: "#eb4034",
   link1Margin: "1vmax",
+
+  // Profile Icon
+  profileIcon: true,
+  ProfileIconElement: FaUserCircle, // Using react-icons for profile icon
   profileIconUrl: "/login",
-  profileIcons: "#eb4034", // <<<<
   profileIconColor: "rgba(35, 35, 35,0.8)",
-  searchIconColor: "rgba(35, 35, 35,0.8)",
-  cartIconColor: "rgba(35, 35, 35,0.8)",
   profileIconColorHover: "#eb4034",
+
+  // Search Icon
+  searchIcon: true,
+  SearchIconElement: FaSearch, // Using react-icons for search icon
+  searchIconUrl: "/search",
+  searchIconColor: "rgba(35, 35, 35,0.8)",
   searchIconColorHover: "#eb4034",
+
+  // Cart Icon
+  cartIcon: true,
+  CartIconElement: FaShoppingCart, // Using react-icons for cart icon
+  cartIconColor: "rgba(35, 35, 35,0.8)",
   cartIconColorHover: "#eb4034",
   cartIconMargin: "1vmax",
 };
