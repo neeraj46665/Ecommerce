@@ -19,11 +19,19 @@
 }
 
 .ProductDetails > div:last-child {
-  align-items: flex-start;
+  align-items: center;
 }
 
+.ProductDetails > div > div {
+  width: 69%;
+  display: block;
+  top: 0%;
+}
 .CarouselImage {
-  width: 20vmax;
+  width: 79%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .detailsBlock-1 > h2 {
