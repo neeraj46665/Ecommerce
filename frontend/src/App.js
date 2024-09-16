@@ -5,6 +5,7 @@ import Home from "./component/Home/Home";
 import ProductDetails from "./component/Product/ProductDetails.js";
 import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search";
+import LoginSignUp from "./component/User/LoginSignUp.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
 import React from "react";
 import webFont from "webfontloader";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/products/:keyword" element={<Products />} />
 
         <Route path="/search" element={<Search />} />
+        <Route path="/login" element={<LoginSignUp />} />
       </Routes>
       <Footer />
     </Router>

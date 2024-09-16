@@ -8,7 +8,8 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { useHistory } from "react-router-dom";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
+import { toast, ToastContainer } from "react-toastify";
 import { logout } from "../../../actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,7 +18,7 @@ const UserOptions = ({ user }) => {
 
   const [open, setOpen] = useState(false);
   const history = useHistory();
-  const alert = useAlert();
+  // const alert = toast.error();
   const dispatch = useDispatch();
 
   const options = [
@@ -58,7 +59,7 @@ const UserOptions = ({ user }) => {
   }
   function logoutUser() {
     dispatch(logout());
-    alert.success("Logout Successfully");
+    toast.success("Logout Successfully");
   }
 
   return (
@@ -78,8 +79,7 @@ const UserOptions = ({ user }) => {
             src={user.avatar.url ? user.avatar.url : "/Profile.png"}
             alt="Profile"
           />
-        }
-      >
+        }>
         {options.map((item) => (
           <SpeedDialAction
             key={item.name}

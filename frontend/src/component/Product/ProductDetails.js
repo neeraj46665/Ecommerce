@@ -76,7 +76,11 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error); // Show error toast notification
+      toast.error(error, {
+        closeButton: true, // Enable the close button
+        closeOnClick: true, // Allow toast to close on click
+        autoClose: 5000, // Auto close after 5 seconds (optional)
+      });
       dispatch(clearErrors()); // Clear the errors
     }
     dispatch(getProductDetails(id)); // Fetch product details using id

@@ -48,7 +48,11 @@ const Products = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error, {
+        closeButton: true, // Enable the close button
+        closeOnClick: true, // Allow toast to close on click
+        autoClose: 5000, // Auto close after 5 seconds (optional)
+      });
       dispatch(clearErrors());
     }
 
