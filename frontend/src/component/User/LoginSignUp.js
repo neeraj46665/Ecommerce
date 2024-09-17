@@ -1,20 +1,19 @@
 import React, { Fragment, useRef, useState, useEffect } from "react";
 import "./LoginSignUp.css";
 import Loader from "../layout/Loader/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import FaceIcon from "@mui/icons-material/Face";
-import { useNavigate, useLocation } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
-  const history = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
+  const location = useLocation(); // useLocation hook to get the current location
 
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user
@@ -35,8 +34,8 @@ const LoginSignUp = () => {
 
   const { name, email, password } = user;
 
-  const [avatar, setAvatar] = useState("./Profile.png");
-  const [avatarPreview, setAvatarPreview] = useState("./Profile.png");
+  const [avatar, setAvatar] = useState("/Profile.png");
+  const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
   const loginSubmit = (e) => {
     e.preventDefault();
@@ -50,41 +49,44 @@ const LoginSignUp = () => {
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
-    myForm.set("avatar", avatar);
-    dispatch(register(myForm));
+    myForm.set("avatar", avatar); // Avatar should be a File object
+
+    dispatch(register(myForm)); // Dispatching the form data
   };
 
   const registerDataChange = (e) => {
     if (e.target.name === "avatar") {
+      const file = e.target.files[0];
+
+      // For image preview
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.readyState === 2) {
-          setAvatarPreview(reader.result);
-          setAvatar(reader.result);
+          setAvatarPreview(reader.result); // Base64 for preview
         }
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file); // Convert file to base64 for preview
+
+      // Set the actual file for form submission
+      setAvatar(file);
     } else {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
 
+  // Redirect after successful authentication
   const redirect = location.search ? location.search.split("=")[1] : "/account";
 
   useEffect(() => {
     if (error) {
-      toast.error(error, {
-        closeButton: true, // Enable the close button
-        closeOnClick: true, // Allow toast to close on click
-        autoClose: 5000, // Auto close after 5 seconds (optional)
-      });
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (isAuthenticated) {
-      history(redirect);
+      navigate(redirect); // Using useNavigate to redirect after authentication
     }
-  }, [dispatch, error, isAuthenticated, history, redirect]);
+  }, [dispatch, error, isAuthenticated, navigate, redirect]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
