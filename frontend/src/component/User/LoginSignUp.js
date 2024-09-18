@@ -40,26 +40,6 @@ const LoginSignUp = () => {
     dispatch(login(loginEmail, loginPassword));
   };
 
-  // const registerDataChange = (e) => {
-  //   if (e.target.name === "avatar") {
-  //     const file = e.target.files[0]; // Get the file
-
-  //     // For image preview
-  //     const reader = new FileReader();
-  //     setAvatar(file); // Store the actual file for uploading
-  //     reader.onloadend = () => {
-  //       if (reader.readyState === 2) {
-  //         setAvatarPreview(reader.result); // Base64 for preview
-  //       }
-  //     };
-  //     reader.readAsDataURL(file);
-  //   } else {
-  //     setUser({
-  //       ...user,
-  //       [e.target.name]: e.target.value,
-  //     });
-  //   }
-  // };
   const registerDataChange = (e) => {
     if (e.target.name === "avatar") {
       const reader = new FileReader();
@@ -83,9 +63,6 @@ const LoginSignUp = () => {
     const myForm = new FormData();
 
     // Append user text fields
-    // myForm.append("name", name);
-    // myForm.append("email", email);
-    // myForm.append("password", password);
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
@@ -96,12 +73,6 @@ const LoginSignUp = () => {
     } else {
       console.error("No avatar selected");
     }
-
-    // Log all the form data entries to ensure everything is correct
-    for (let [key, value] of myForm.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     // Dispatch the form data
     dispatch(register(myForm)); // Assuming `register` is your Redux action
   };

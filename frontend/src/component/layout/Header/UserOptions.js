@@ -1,25 +1,22 @@
 import React, { Fragment, useState } from "react";
 import "./Header.css";
-import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
-import Backdrop from "@material-ui/core/Backdrop";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import PersonIcon from "@material-ui/icons/Person";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { useHistory } from "react-router-dom";
-// import { useAlert } from "react-alert";
-import { toast, ToastContainer } from "react-toastify";
+import { SpeedDial, SpeedDialAction, Backdrop } from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonIcon from "@mui/icons-material/Person";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { logout } from "../../../actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const UserOptions = ({ user }) => {
-  const { cartItems } = useSelector((state) => state.cart);
-
   const [open, setOpen] = useState(false);
-  const history = useHistory();
-  // const alert = toast.error();
+  const history = useNavigate();
   const dispatch = useDispatch();
+
+  // const { cartItems } = useSelector((state) => state.cart);
 
   const options = [
     { icon: <ListAltIcon />, name: "Orders", func: orders },
@@ -27,10 +24,10 @@ const UserOptions = ({ user }) => {
     {
       icon: (
         <ShoppingCartIcon
-          style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
+        // style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
         />
       ),
-      name: `Cart(${cartItems.length})`,
+      // name: `Cart(${cartItems.length})`,
       func: cart,
     },
     { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
@@ -45,18 +42,21 @@ const UserOptions = ({ user }) => {
   }
 
   function dashboard() {
-    history.push("/admin/dashboard");
+    history("/admin/dashboard");
   }
 
   function orders() {
-    history.push("/orders");
+    history("/orders");
   }
+
   function account() {
-    history.push("/account");
+    history("/account");
   }
+
   function cart() {
-    history.push("/cart");
+    history("/cart");
   }
+
   function logoutUser() {
     dispatch(logout());
     toast.success("Logout Successfully");
@@ -64,12 +64,11 @@ const UserOptions = ({ user }) => {
 
   return (
     <Fragment>
-      <Backdrop open={open} style={{ zIndex: "10" }} />
+      <Backdrop open={open} className="backdrop" />
       <SpeedDial
         ariaLabel="SpeedDial tooltip example"
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
-        style={{ zIndex: "11" }}
         open={open}
         direction="down"
         className="speedDial"

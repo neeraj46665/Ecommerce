@@ -4,24 +4,25 @@ import {
   productsReducer,
   productDetailsReducer,
 } from "./reducers/productReducer";
-import { userReducer } from "./reducers/userReducer";
+import { userReducer, profileReducer } from "./reducers/userReducer";
 // Combine all reducers into a single root reducer
 const reducer = combineReducers({
   products: productsReducer,
   productDetails: productDetailsReducer,
   user: userReducer,
+  profile: profileReducer,
 });
 
 // Define the initial state
 let initialState = {
-  // cart: {
-  //   cartItems: localStorage.getItem("cartItems")
-  //     ? JSON.parse(localStorage.getItem("cartItems"))
-  //     : [],
-  //   shippingInfo: localStorage.getItem("shippingInfo")
-  //     ? JSON.parse(localStorage.getItem("shippingInfo"))
-  //     : {},
-  // },
+  cart: {
+    cartItems: localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : [],
+    shippingInfo: localStorage.getItem("shippingInfo")
+      ? JSON.parse(localStorage.getItem("shippingInfo"))
+      : {},
+  },
 };
 
 // Configure the store

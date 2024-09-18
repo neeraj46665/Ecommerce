@@ -9,19 +9,30 @@ import LoginSignUp from "./component/User/LoginSignUp.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
 import React from "react";
 import webFont from "webfontloader";
+import store from "./store.js";
+import { loadUser } from "./actions/userAction.js";
+import UserOptions from "./component/layout/Header/UserOptions.js";
+import { useSelector } from "react-redux";
+import Profile from "./component/User/Profile.js";
+import ProtectedRoute from "./component/Route/ProtectedRoute.js";
+import UpdateProfile from "./component/User/UpdateProfile";
 
 function App() {
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   React.useEffect(() => {
     webFont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     });
+
+    store.dispatch(loadUser());
   }, []);
 
   return (
     <Router>
       <Header />
+      {isAuthenticated && <UserOptions user={user} />}
       <Routes>
         {/* Use Routes instead of directly using Route */}
         <Route path="/" element={<Home />} />
@@ -32,6 +43,12 @@ function App() {
 
         <Route path="/search" element={<Search />} />
         <Route path="/login" element={<LoginSignUp />} />
+        <Route path="/account" element={<ProtectedRoute />}>
+          <Route index element={<Profile />} />
+        </Route>
+        <Route path="/me/update" element={<ProtectedRoute />}>
+          <Route index element={<UpdateProfile />} />
+        </Route>
       </Routes>
       <Footer />
     </Router>
