@@ -2,12 +2,10 @@ const ErrorHander = require("../utils/errorhander");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
-const sendEmail = require("../utils/sendEmail.js");
+const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
-const req = require("express/lib/request.js");
 
-// Register user controller
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
@@ -182,23 +180,24 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
     email: req.body.email,
   };
 
-  if (req.body.avatar !== "") {
+  if (req.file) {
+    // Remove old avatar from Cloudinary
     const user = await User.findById(req.user.id);
+    if (user.avatar) {
+      await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+    }
 
-    // const imageId = user.avatar.public_id;
+    // Upload new avatar to Cloudinary
+    const myCloud = await cloudinary.v2.uploader.upload(req.file.path, {
+      folder: "avatars",
+      width: 150,
+      crop: "scale",
+    });
 
-    // await cloudinary.v2.uploader.destroy(imageId);
-
-    // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //   folder: "avatars",
-    //   width: 150,
-    //   crop: "scale",
-    // });
-
-    // newUserData.avatar = {
-    //   public_id: myCloud.public_id,
-    //   url: myCloud.secure_url,
-    // };
+    newUserData.avatar = {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    };
   }
 
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
@@ -259,7 +258,7 @@ exports.updateUserRole = catchAsyncErrors(async (req, res, next) => {
 
 // Delete User --Admin
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findByIdAndDelete(req.params.id);
+  const user = await User.findById(req.params.id);
 
   if (!user) {
     return next(
@@ -267,9 +266,11 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  // const imageId = user.avatar.public_id;
+  const imageId = user.avatar.public_id;
 
-  // await cloudinary.v2.uploader.destroy(imageId);
+  await cloudinary.v2.uploader.destroy(imageId);
+
+  await user.remove();
 
   res.status(200).json({
     success: true,

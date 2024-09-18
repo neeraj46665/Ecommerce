@@ -1,21 +1,25 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+import Loader from "../layout/Loader/Loader";
 
-const ProtectedRoute = ({ isAdmin, ...rest }) => {
+const ProtectedRoute = ({ isAdmin, element: Component, ...rest }) => {
   const { loading, isAuthenticated, user } = useSelector((state) => state.user);
+  const location = useLocation();
 
-  if (loading) return null; // Or a loader, if necessary
+  if (loading) {
+    return <Loader />; // Or a Loader component
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
   if (isAdmin && user.role !== "admin") {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
-  return <Outlet {...rest} />;
+  return Component;
 };
 
 export default ProtectedRoute;

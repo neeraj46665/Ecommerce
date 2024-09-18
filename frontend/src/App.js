@@ -43,12 +43,16 @@ function App() {
 
         <Route path="/search" element={<Search />} />
         <Route path="/login" element={<LoginSignUp />} />
-        <Route path="/account" element={<ProtectedRoute />}>
-          <Route index element={<Profile />} />
-        </Route>
-        <Route path="/me/update" element={<ProtectedRoute />}>
-          <Route index element={<UpdateProfile />} />
-        </Route>
+        <Route
+          path="/account"
+          element={<ProtectedRoute isAdmin={false} element={<Profile />} />}
+        />
+        <Route
+          path="/me/update"
+          element={
+            <ProtectedRoute isAdmin={false} element={<UpdateProfile />} />
+          }
+        />
       </Routes>
       <Footer />
     </Router>

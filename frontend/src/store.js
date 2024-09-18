@@ -5,12 +5,14 @@ import {
   productDetailsReducer,
 } from "./reducers/productReducer";
 import { userReducer, profileReducer } from "./reducers/userReducer";
+import { cartReducer } from "./reducers/cartReducer";
 // Combine all reducers into a single root reducer
 const reducer = combineReducers({
   products: productsReducer,
   productDetails: productDetailsReducer,
   user: userReducer,
   profile: profileReducer,
+  cart: cartReducer,
 });
 
 // Define the initial state

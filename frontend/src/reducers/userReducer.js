@@ -118,7 +118,8 @@ export const profileReducer = (state = {}, action) => {
       return {
         ...state,
         loading: false,
-        isUpdated: action.payload,
+        isUpdated: true,
+        user: action.payload,
       };
 
     case DELETE_USER_SUCCESS:

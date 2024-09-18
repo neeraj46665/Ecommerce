@@ -12,40 +12,14 @@ import { useNavigate } from "react-router-dom";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
-  const alert = toast();
   const navigate = useNavigate();
-
   const { user } = useSelector((state) => state.user);
   const { error, isUpdated, loading } = useSelector((state) => state.profile);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState(null); // Store the file directly
   const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
-
-  const updateProfileSubmit = (e) => {
-    e.preventDefault();
-
-    const myForm = new FormData();
-
-    myForm.set("name", name);
-    myForm.set("email", email);
-    myForm.set("avatar", avatar);
-    dispatch(updateProfile(myForm));
-  };
-
-  const updateProfileDataChange = (e) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatarPreview(reader.result);
-        setAvatar(reader.result);
-      }
-    };
-
-    reader.readAsDataURL(e.target.files[0]);
-  };
 
   useEffect(() => {
     if (user) {
@@ -55,21 +29,39 @@ const UpdateProfile = () => {
     }
 
     if (error) {
-      alert.error(error);
+      toast.error(error); // Directly use toast here
       dispatch(clearErrors());
     }
 
     if (isUpdated) {
-      alert.success("Profile Updated Successfully");
+      toast.success("Profile Updated Successfully");
       dispatch(loadUser());
-
       navigate("/account");
-
-      dispatch({
-        type: UPDATE_PROFILE_RESET,
-      });
+      dispatch({ type: UPDATE_PROFILE_RESET });
     }
-  }, [dispatch, error, alert, navigate, user, isUpdated]);
+  }, [dispatch, error, isUpdated, navigate, user]);
+
+  const updateProfileSubmit = (e) => {
+    e.preventDefault();
+    const myForm = new FormData();
+    myForm.set("name", name);
+    myForm.set("email", email);
+    if (avatar) myForm.set("avatar", avatar);
+    dispatch(updateProfile(myForm));
+  };
+
+  const updateProfileDataChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAvatarPreview(reader.result);
+        setAvatar(file); // Set the file itself
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <Fragment>
       {loading ? (
@@ -80,7 +72,6 @@ const UpdateProfile = () => {
           <div className="updateProfileContainer">
             <div className="updateProfileBox">
               <h2 className="updateProfileHeading">Update Profile</h2>
-
               <form
                 className="updateProfileForm"
                 encType="multipart/form-data"
@@ -107,7 +98,6 @@ const UpdateProfile = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-
                 <div id="updateProfileImage">
                   <img src={avatarPreview} alt="Avatar Preview" />
                   <input
