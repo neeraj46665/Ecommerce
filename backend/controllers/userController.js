@@ -4,54 +4,30 @@ const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail.js");
 const crypto = require("crypto");
+const cloudinary = require("cloudinary");
+const req = require("express/lib/request.js");
 
-// exports. =catchAsyncErrors(async (req,res,next)=>{});
-
-// // Register a User
-const cloudinary = require("cloudinary"); // Assuming you're using Cloudinary for avatar storage
-
+// Register user controller
+// Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+  const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    folder: "avatars",
+    width: 150,
+    crop: "scale",
+  });
+
   const { name, email, password } = req.body;
 
-  // Check if all fields are provided
-  if (!name || !email || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Please provide all required fields" });
-  }
-
-  // Check if the email is already in use
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email already exists" });
-  }
-
-  // Handle avatar upload if provided
-  let avatar = {};
-  if (req.files) {
-    // Upload the avatar to Cloudinary or any other service
-    const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-      folder: "avatars",
-      width: 150,
-      crop: "scale",
-    });
-    avatar = {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
-    };
-  }
-
-  // Create new user
   const user = await User.create({
     name,
     email,
-    password, // Ensure password is hashed in the User model or using middleware
-    avatar,
+    password,
+    avatar: {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    },
   });
 
-  // Send token and response
   sendToken(user, 201, res);
 });
 

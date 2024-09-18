@@ -5,7 +5,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import FaceIcon from "@mui/icons-material/Face";
-
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,7 +13,7 @@ const LoginSignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // useNavigate hook to programmatically navigate
   const location = useLocation(); // useLocation hook to get the current location
-
+  const alert = toast();
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user
   );
@@ -31,7 +30,6 @@ const LoginSignUp = () => {
     email: "",
     password: "",
   });
-
   const { name, email, password } = user;
 
   const [avatar, setAvatar] = useState("/Profile.png");
@@ -42,51 +40,86 @@ const LoginSignUp = () => {
     dispatch(login(loginEmail, loginPassword));
   };
 
-  const registerSubmit = (e) => {
-    e.preventDefault();
+  // const registerDataChange = (e) => {
+  //   if (e.target.name === "avatar") {
+  //     const file = e.target.files[0]; // Get the file
 
-    const myForm = new FormData();
-    myForm.set("name", name);
-    myForm.set("email", email);
-    myForm.set("password", password);
-    myForm.set("avatar", avatar); // Avatar should be a File object
-
-    dispatch(register(myForm)); // Dispatching the form data
-  };
-
+  //     // For image preview
+  //     const reader = new FileReader();
+  //     setAvatar(file); // Store the actual file for uploading
+  //     reader.onloadend = () => {
+  //       if (reader.readyState === 2) {
+  //         setAvatarPreview(reader.result); // Base64 for preview
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     setUser({
+  //       ...user,
+  //       [e.target.name]: e.target.value,
+  //     });
+  //   }
+  // };
   const registerDataChange = (e) => {
     if (e.target.name === "avatar") {
-      const file = e.target.files[0];
-
-      // For image preview
       const reader = new FileReader();
+
       reader.onload = () => {
         if (reader.readyState === 2) {
-          setAvatarPreview(reader.result); // Base64 for preview
+          setAvatarPreview(reader.result);
+          setAvatar(reader.result);
         }
       };
-      reader.readAsDataURL(file); // Convert file to base64 for preview
 
-      // Set the actual file for form submission
-      setAvatar(file);
+      reader.readAsDataURL(e.target.files[0]);
     } else {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
 
-  // Redirect after successful authentication
+  const registerSubmit = (e) => {
+    e.preventDefault();
+
+    const myForm = new FormData();
+
+    // Append user text fields
+    // myForm.append("name", name);
+    // myForm.append("email", email);
+    // myForm.append("password", password);
+    myForm.set("name", name);
+    myForm.set("email", email);
+    myForm.set("password", password);
+
+    // Append avatar file if available
+    if (avatar) {
+      myForm.append("avatar", avatar);
+    } else {
+      console.error("No avatar selected");
+    }
+
+    // Log all the form data entries to ensure everything is correct
+    for (let [key, value] of myForm.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    // Dispatch the form data
+    dispatch(register(myForm)); // Assuming `register` is your Redux action
+  };
+
   const redirect = location.search ? location.search.split("=")[1] : "/account";
 
   useEffect(() => {
+    // Handle error if it exists
     if (error) {
-      toast.error(error);
-      dispatch(clearErrors());
+      toast.error(error.response ? error.response.data.message : error.message);
+      dispatch(clearErrors()); // Optional: clear the error after handling it
     }
 
+    // Redirect if authenticated
     if (isAuthenticated) {
-      navigate(redirect); // Using useNavigate to redirect after authentication
+      navigate(redirect); // Use useNavigate to redirect after authentication
     }
-  }, [dispatch, error, isAuthenticated, navigate, redirect]);
+  }, [dispatch, error, alert, isAuthenticated, navigate, redirect]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
