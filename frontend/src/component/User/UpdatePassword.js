@@ -5,13 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, updatePassword } from "../../actions/userAction";
 import { UPDATE_PASSWORD_RESET } from "../../constants/userConstants";
 import MetaData from "../layout/MetaData";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import LockIcon from "@material-ui/icons/Lock";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import LockIcon from "@mui/icons-material/Lock";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const UpdatePassword = ({ history }) => {
+const UpdatePassword = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const alert = toast.error();
 
   const { error, isUpdated, loading } = useSelector((state) => state.profile);
@@ -39,15 +42,15 @@ const UpdatePassword = ({ history }) => {
     }
 
     if (isUpdated) {
-      alert.success("Profile Updated Successfully");
+      toast.success("Profile Updated Successfully");
 
-      history.push("/account");
+      navigate("/account");
 
       dispatch({
         type: UPDATE_PASSWORD_RESET,
       });
     }
-  }, [dispatch, error, alert, history, isUpdated]);
+  }, [dispatch, error, alert, navigate, isUpdated]);
 
   return (
     <Fragment>

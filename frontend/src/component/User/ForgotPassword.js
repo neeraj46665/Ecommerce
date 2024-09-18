@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import "./ForgotPassword.css";
 import Loader from "../layout/Loader/Loader";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, forgotPassword } from "../../actions/userAction";
 import { toast } from "react-toastify";
@@ -9,7 +9,6 @@ import MetaData from "../layout/MetaData";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const alert = toast.error();
 
   const { error, message, loading } = useSelector(
     (state) => state.forgotPassword
@@ -21,7 +20,6 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     const myForm = new FormData();
-
     myForm.set("email", email);
     dispatch(forgotPassword(myForm));
   };
@@ -33,9 +31,9 @@ const ForgotPassword = () => {
     }
 
     if (message) {
-      alert.success(message);
+      toast.success(message);
     }
-  }, [dispatch, error, alert, message]);
+  }, [dispatch, error, message]);
 
   return (
     <Fragment>

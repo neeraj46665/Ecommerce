@@ -4,13 +4,15 @@ import Loader from "../layout/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, resetPassword } from "../../actions/userAction";
 import MetaData from "../layout/MetaData";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import LockIcon from "@material-ui/icons/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import LockIcon from "@mui/icons-material/Lock";
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
-const ResetPassword = ({ history, match }) => {
+const ResetPassword = () => {
   const dispatch = useDispatch();
-  const alert = toast();
+  const navigate = useNavigate();
+  const { token } = useParams(); // Retrieve the token from the URL
 
   const { error, success, loading } = useSelector(
     (state) => state.forgotPassword
@@ -22,12 +24,16 @@ const ResetPassword = ({ history, match }) => {
   const resetPasswordSubmit = (e) => {
     e.preventDefault();
 
-    const myForm = new FormData();
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
+    const myForm = new FormData();
     myForm.set("password", password);
     myForm.set("confirmPassword", confirmPassword);
 
-    dispatch(resetPassword(match.params.token, myForm));
+    dispatch(resetPassword(token, myForm)); // Pass the token from URL params
   };
 
   useEffect(() => {
@@ -37,11 +43,10 @@ const ResetPassword = ({ history, match }) => {
     }
 
     if (success) {
-      alert.success("Password Updated Successfully");
-
-      history.push("/login");
+      toast.success("Password Updated Successfully");
+      navigate("/login");
     }
-  }, [dispatch, error, alert, history, success]);
+  }, [dispatch, error, navigate, success]);
 
   return (
     <Fragment>
@@ -52,7 +57,7 @@ const ResetPassword = ({ history, match }) => {
           <MetaData title="Change Password" />
           <div className="resetPasswordContainer">
             <div className="resetPasswordBox">
-              <h2 className="resetPasswordHeading">Update Profile</h2>
+              <h2 className="resetPasswordHeading">Change Password</h2>
 
               <form
                 className="resetPasswordForm"

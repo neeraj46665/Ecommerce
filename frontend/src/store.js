@@ -4,7 +4,11 @@ import {
   productsReducer,
   productDetailsReducer,
 } from "./reducers/productReducer";
-import { userReducer, profileReducer } from "./reducers/userReducer";
+import {
+  userReducer,
+  profileReducer,
+  forgotPasswordReducer,
+} from "./reducers/userReducer";
 import { cartReducer } from "./reducers/cartReducer";
 // Combine all reducers into a single root reducer
 const reducer = combineReducers({
@@ -12,6 +16,7 @@ const reducer = combineReducers({
   productDetails: productDetailsReducer,
   user: userReducer,
   profile: profileReducer,
+  forgotPassword: forgotPasswordReducer,
   cart: cartReducer,
 });
 
