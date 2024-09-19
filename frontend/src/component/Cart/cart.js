@@ -5,15 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { addItemsToCart, removeItemsFromCart } from "../../actions/cartAction";
 import { Typography } from "@mui/material";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
-
 import { Link, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartItems } = useSelector((state) => state.cart);
-  const { id } = useParams(); // Get the id from the URL
 
   const increaseQuantity = (id, quantity, stock) => {
     const newQty = quantity + 1;
@@ -44,7 +41,6 @@ const Cart = () => {
       {cartItems.length === 0 ? (
         <div className="emptyCart">
           <RemoveShoppingCartIcon />
-
           <Typography>No Product in Your Cart</Typography>
           <Link to="/products">View Products</Link>
         </div>

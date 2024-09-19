@@ -12,7 +12,7 @@ import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStati
 
 import { Country, State } from "country-state-city";
 import CheckoutSteps from "../Cart/CheckoutSteps";
-import toast from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {

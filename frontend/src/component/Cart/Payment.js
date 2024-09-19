@@ -2,8 +2,6 @@ import React, { Fragment, useEffect, useRef } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
-import { Typography } from "@material-ui/core";
-import { useAlert } from "react-alert";
 import {
   CardNumberElement,
   CardCvcElement,
@@ -14,19 +12,23 @@ import {
 
 import axios from "axios";
 import "./payment.css";
-import CreditCardIcon from "@material-ui/icons/CreditCard";
-import EventIcon from "@material-ui/icons/Event";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import { createOrder, clearErrors } from "../../actions/orderAction";
+import { Typography } from "@mui/material";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import EventIcon from "@mui/icons-material/Event";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
-const Payment = ({ history }) => {
+import { createOrder, clearErrors } from "../../actions/orderAction";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
 
   const dispatch = useDispatch();
-  const alert = useAlert();
   const stripe = useStripe();
   const elements = useElements();
   const payBtn = useRef(null);
+  const navigate = useNavigate();
 
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
@@ -47,7 +49,6 @@ const Payment = ({ history }) => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     payBtn.current.disabled = true;
 
     try {
@@ -61,7 +62,6 @@ const Payment = ({ history }) => {
         paymentData,
         config
       );
-
       const client_secret = data.client_secret;
 
       if (!stripe || !elements) return;
@@ -85,8 +85,7 @@ const Payment = ({ history }) => {
 
       if (result.error) {
         payBtn.current.disabled = false;
-
-        alert.error(result.error.message);
+        toast.error(result.error.message);
       } else {
         if (result.paymentIntent.status === "succeeded") {
           order.paymentInfo = {
@@ -95,31 +94,30 @@ const Payment = ({ history }) => {
           };
 
           dispatch(createOrder(order));
-
-          history.push("/success");
+          navigate("/success");
         } else {
-          alert.error("There's some issue while processing payment ");
+          toast.error("There was an issue processing the payment");
         }
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      alert.error(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
-  }, [dispatch, error, alert]);
+  }, [dispatch, error]);
 
   return (
     <Fragment>
       <MetaData title="Payment" />
       <CheckoutSteps activeStep={2} />
       <div className="paymentContainer">
-        <form className="paymentForm" onSubmit={(e) => submitHandler(e)}>
+        <form className="paymentForm" onSubmit={submitHandler}>
           <Typography>Card Info</Typography>
           <div>
             <CreditCardIcon />

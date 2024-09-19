@@ -7,7 +7,7 @@ import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search";
 import LoginSignUp from "./component/User/LoginSignUp.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
-import React from "react";
+import React, { useState } from "react";
 import webFont from "webfontloader";
 import store from "./store.js";
 import { loadUser } from "./actions/userAction.js";
@@ -19,10 +19,25 @@ import UpdateProfile from "./component/User/UpdateProfile";
 import UpdatePassword from "./component/User/UpdatePassword.js";
 import ForgotPassword from "./component/User/ForgotPassword.js";
 import ResetPassword from "./component/User/ResetPassword.js";
-import Cart from "./component/Cart/cart.js";
+import Shipping from "./component/Cart/Shipping.js";
+import ConfirmOrder from "./component/Cart/ConfirmOrder.js";
+import Payment from "./component/Cart/Payment.js";
+import Cart from "./component/Cart/Cart.js";
+import OrderSuccess from "./component/Cart/OrderSuccess.js";
+import axios from "axios";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
+
+  const [stripeApiKey, setStripeApiKey] = useState();
+
+  async function getStripeApiKey() {
+    const { data } = await axios.get("/api/v1/stripeapikey");
+    setStripeApiKey(data.stripeApiKey);
+  }
+
   React.useEffect(() => {
     webFont.load({
       google: {
@@ -31,6 +46,7 @@ function App() {
     });
 
     store.dispatch(loadUser());
+    getStripeApiKey();
   }, []);
 
   return (
@@ -55,6 +71,10 @@ function App() {
           element={<ProtectedRoute isAdmin={false} element={<Profile />} />}
         />
         <Route
+          path="login/shipping"
+          element={<ProtectedRoute isAdmin={false} element={<Shipping />} />}
+        />
+        <Route
           path="/me/update"
           element={
             <ProtectedRoute isAdmin={false} element={<UpdateProfile />} />
@@ -64,6 +84,32 @@ function App() {
           path="/password/update"
           element={
             <ProtectedRoute isAdmin={false} element={<UpdatePassword />} />
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            <ProtectedRoute isAdmin={false} element={<OrderSuccess />} />
+          }
+        />
+        <Route
+          path="/order/confirm"
+          element={
+            <ProtectedRoute isAdmin={false} element={<ConfirmOrder />} />
+          }
+        />
+        <Route
+          path="/process/payment"
+          element={
+            <ProtectedRoute isAdmin={false}>
+              {stripeApiKey ? (
+                <Elements stripe={loadStripe(stripeApiKey)}>
+                  <Payment />
+                </Elements>
+              ) : (
+                "Stripe API key is missing"
+              )}
+            </ProtectedRoute>
           }
         />
       </Routes>
