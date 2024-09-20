@@ -11,7 +11,7 @@ const ProtectedRoute = ({ isAdmin, element: Component, ...rest }) => {
     return <Loader />; // Or a Loader component
   }
 
-  if (!isAuthenticated) {
+  if (isAuthenticated === false) {
     return <Navigate to="/login" state={{ from: location }} />;
   }
 

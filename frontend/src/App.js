@@ -6,7 +6,12 @@ import ProductDetails from "./component/Product/ProductDetails.js";
 import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search";
 import LoginSignUp from "./component/User/LoginSignUp.js";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Switch,
+} from "react-router-dom"; // Updated import
 import React, { useState } from "react";
 import webFont from "webfontloader";
 import store from "./store.js";
@@ -24,6 +29,8 @@ import ConfirmOrder from "./component/Cart/ConfirmOrder.js";
 import Payment from "./component/Cart/Payment.js";
 import Cart from "./component/Cart/Cart.js";
 import OrderSuccess from "./component/Cart/OrderSuccess.js";
+import MyOrders from "./component/Order/MyOrders.js";
+import OrderDetails from "./component/Order/OrderDetails.js";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -31,7 +38,7 @@ import { loadStripe } from "@stripe/stripe-js";
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
 
-  const [stripeApiKey, setStripeApiKey] = useState();
+  const [stripeApiKey, setStripeApiKey] = useState("");
 
   async function getStripeApiKey() {
     const { data } = await axios.get("/api/v1/stripeapikey");
@@ -93,11 +100,26 @@ function App() {
           }
         />
         <Route
-          path="/order/confirm"
+          path="/orders"
+          element={<ProtectedRoute isAdmin={false} element={<MyOrders />} />}
+        />
+        <Route
+          path="/order/:id"
           element={
-            <ProtectedRoute isAdmin={false} element={<ConfirmOrder />} />
+            <ProtectedRoute isAdmin={false}>
+              <OrderDetails />
+            </ProtectedRoute>
           }
         />
+        <Route
+          path="/order/confirm"
+          element={
+            <ProtectedRoute isAdmin={false}>
+              <ConfirmOrder />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/process/payment"
           element={
