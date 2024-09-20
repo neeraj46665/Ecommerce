@@ -3,6 +3,7 @@ import { thunk } from "redux-thunk";
 import {
   productsReducer,
   productDetailsReducer,
+  newReviewReducer,
 } from "./reducers/productReducer";
 import {
   userReducer,
@@ -11,12 +12,13 @@ import {
 } from "./reducers/userReducer";
 import { cartReducer } from "./reducers/cartReducer";
 import {
-  allOrdersReducer,
+  // allOrdersReducer,
   myOrdersReducer,
   newOrderReducer,
   orderDetailsReducer,
-  orderReducer,
+  // orderReducer,
 } from "./reducers/orderReducer";
+// import { newReview } from "./actions/productAction";
 // Combine all reducers into a single root reducer
 const reducer = combineReducers({
   products: productsReducer,
@@ -28,6 +30,7 @@ const reducer = combineReducers({
   newOrder: newOrderReducer,
   myOrders: myOrdersReducer,
   orderDetails: orderDetailsReducer,
+  newReview: newReviewReducer,
 });
 
 // Define the initial state

@@ -29,6 +29,10 @@ const ProductDetails = () => {
     (state) => state.productDetails
   );
 
+  const { success, error: reviewError } = useSelector(
+    (state) => state.newReview
+  );
+
   const options = {
     size: "large",
     value: product.ratings,
@@ -83,8 +87,17 @@ const ProductDetails = () => {
       });
       dispatch(clearErrors()); // Clear the errors
     }
+
+    if (reviewError) {
+      toast.error(reviewError);
+      dispatch(clearErrors());
+    }
+
+    if (success) {
+      toast.success("Review Submitted Successfully ");
+    }
     dispatch(getProductDetails(id)); // Fetch product details using id
-  }, [dispatch, id, error]);
+  }, [dispatch, id, error, success, reviewError]);
 
   return (
     <Fragment>
