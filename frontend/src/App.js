@@ -26,6 +26,7 @@ import Cart from "./component/Cart/Cart.js";
 import OrderSuccess from "./component/Cart/OrderSuccess.js";
 import MyOrders from "./component/Order/MyOrders.js";
 import OrderDetails from "./component/Order/OrderDetails.js";
+import Dashboard from "./component/Admin/Dashboard.js";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -111,6 +112,10 @@ function App() {
             <ProtectedRoute isAdmin={false} element={<OrderDetails />} />
           }
         />
+        <Route
+          path="/admin/dashboard"
+          element={<ProtectedRoute isAdmin={false} element={<Dashboard />} />}
+        />
 
         <Route
           path="/process/payment"
@@ -124,6 +129,10 @@ function App() {
             )
           }
         />
+        {/* <Route
+          path="/admin/dashboard"
+          element={<ProtectedRoute isAdmin={false} element={<Dashboard />} />}
+        /> */}
       </Routes>
       <Footer />
     </Router>

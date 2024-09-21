@@ -1,22 +1,30 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
 import {
-  productsReducer,
-  productDetailsReducer,
+  newProductReducer,
   newReviewReducer,
+  productDetailsReducer,
+  productReducer,
+  productReviewsReducer,
+  productsReducer,
+  reviewReducer,
 } from "./reducers/productReducer";
+
 import {
-  userReducer,
-  profileReducer,
+  allUsersReducer,
   forgotPasswordReducer,
+  profileReducer,
+  userDetailsReducer,
+  userReducer,
 } from "./reducers/userReducer";
+
 import { cartReducer } from "./reducers/cartReducer";
 import {
-  // allOrdersReducer,
+  allOrdersReducer,
   myOrdersReducer,
   newOrderReducer,
   orderDetailsReducer,
-  // orderReducer,
+  orderReducer,
 } from "./reducers/orderReducer";
 // import { newReview } from "./actions/productAction";
 // Combine all reducers into a single root reducer
@@ -31,6 +39,14 @@ const reducer = combineReducers({
   myOrders: myOrdersReducer,
   orderDetails: orderDetailsReducer,
   newReview: newReviewReducer,
+  newProduct: newProductReducer,
+  product: productReducer,
+  allOrders: allOrdersReducer,
+  order: orderReducer,
+  allUsers: allUsersReducer,
+  userDetails: userDetailsReducer,
+  productReviews: productReviewsReducer,
+  review: reviewReducer,
 });
 
 // Define the initial state
