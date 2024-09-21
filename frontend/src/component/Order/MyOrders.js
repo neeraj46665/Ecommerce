@@ -3,12 +3,12 @@ import "./myOrders.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, myOrders } from "../../actions/orderAction";
 import Loader from "../layout/Loader/Loader";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid"; // Updated import from MUI
 
 import { Link } from "react-router-dom";
-import Typography from "@mui/material/Typography"; // Use MUI's material library
+import Typography from "@mui/material/Typography"; // MUI's material library
 import MetaData from "../layout/MetaData";
-import LaunchIcon from "@mui/icons-material/Launch"; // Use MUI's icons library
+import LaunchIcon from "@mui/icons-material/Launch"; // MUI's icons library
 import { toast } from "react-toastify";
 
 const MyOrders = () => {
@@ -19,16 +19,13 @@ const MyOrders = () => {
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
-
     {
       field: "status",
       headerName: "Status",
       minWidth: 150,
       flex: 0.5,
       cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
+        return params.row.status === "Delivered" ? "greenColor" : "redColor";
       },
     },
     {
@@ -38,7 +35,6 @@ const MyOrders = () => {
       minWidth: 150,
       flex: 0.3,
     },
-
     {
       field: "amount",
       headerName: "Amount",
@@ -46,7 +42,6 @@ const MyOrders = () => {
       minWidth: 270,
       flex: 0.5,
     },
-
     {
       field: "actions",
       flex: 0.3,
@@ -56,7 +51,7 @@ const MyOrders = () => {
       sortable: false,
       renderCell: (params) => {
         return (
-          <Link to={`/order/${params.getValue(params.id, "id")}`}>
+          <Link to={`/order/${params.row.id}`}>
             <LaunchIcon />
           </Link>
         );
@@ -64,26 +59,28 @@ const MyOrders = () => {
     },
   ];
 
-  const rows = [];
+  // Fetch orders only once on component mount
+  useEffect(() => {
+    dispatch(myOrders());
+  }, [dispatch]);
 
-  orders &&
-    orders.forEach((item) => {
-      rows.push({
-        itemsQty: item.orderItems.length,
-        id: item._id,
-        status: item.orderStatus,
-        amount: item.totalPrice,
-      });
-    });
-
+  // Handle errors separately
   useEffect(() => {
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
     }
+  }, [error, dispatch]);
 
-    dispatch(myOrders());
-  }, [dispatch, error]);
+  // Simplified row creation
+  const rows = orders
+    ? orders.map((order) => ({
+        id: order._id,
+        itemsQty: order.orderItems.length,
+        status: order.orderStatus,
+        amount: order.totalPrice,
+      }))
+    : [];
 
   return (
     <Fragment>

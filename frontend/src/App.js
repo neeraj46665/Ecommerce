@@ -6,12 +6,7 @@ import ProductDetails from "./component/Product/ProductDetails.js";
 import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search";
 import LoginSignUp from "./component/User/LoginSignUp.js";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Switch,
-} from "react-router-dom"; // Updated import
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
 import React, { useState } from "react";
 import webFont from "webfontloader";
 import store from "./store.js";
@@ -99,10 +94,7 @@ function App() {
             <ProtectedRoute isAdmin={false} element={<OrderSuccess />} />
           }
         />
-        <Route
-          path="/orders"
-          element={<ProtectedRoute isAdmin={false} element={<MyOrders />} />}
-        />
+
         <Route
           path="/order/:id"
           element={
@@ -114,24 +106,24 @@ function App() {
         <Route
           path="/order/confirm"
           element={
-            <ProtectedRoute isAdmin={false}>
-              <ConfirmOrder />
-            </ProtectedRoute>
+            <ProtectedRoute isAdmin={false} element={<ConfirmOrder />} />
           }
+        />
+        <Route
+          path="/orders"
+          element={<ProtectedRoute isAdmin={false} element={<MyOrders />} />}
         />
 
         <Route
           path="/process/payment"
           element={
-            <ProtectedRoute isAdmin={false}>
-              {stripeApiKey ? (
-                <Elements stripe={loadStripe(stripeApiKey)}>
-                  <Payment />
-                </Elements>
-              ) : (
-                "Stripe API key is missing"
-              )}
-            </ProtectedRoute>
+            stripeApiKey ? (
+              <Elements stripe={loadStripe(stripeApiKey)}>
+                <Payment />
+              </Elements>
+            ) : (
+              <div>Stripe API key is missing</div>
+            )
           }
         />
       </Routes>
