@@ -96,14 +96,6 @@ function App() {
         />
 
         <Route
-          path="/order/:id"
-          element={
-            <ProtectedRoute isAdmin={false}>
-              <OrderDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/order/confirm"
           element={
             <ProtectedRoute isAdmin={false} element={<ConfirmOrder />} />
@@ -112,6 +104,12 @@ function App() {
         <Route
           path="/orders"
           element={<ProtectedRoute isAdmin={false} element={<MyOrders />} />}
+        />
+        <Route
+          path="/order/:id"
+          element={
+            <ProtectedRoute isAdmin={false} element={<OrderDetails />} />
+          }
         />
 
         <Route
