@@ -26,9 +26,7 @@ const NewProduct = () => {
   const [category, setCategory] = useState("");
   const [Stock, setStock] = useState(0);
   const [images, setImages] = useState([]);
-  const [imagesPreview, setImagesPreview] = useState([
-    "../../images/noimage.png",
-  ]);
+  const [imagesPreview, setImagesPreview] = useState([]);
 
   const categories = [
     "Laptop",

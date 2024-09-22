@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import SideBar from "./Sidebar";
 import { DELETE_REVIEW_RESET } from "../../constants/productConstants";
 import { useNavigate } from "react-router-dom";
+import Loader from "../layout/Loader/Loader"; // Assuming there's a Loader component
 
 const ProductReviews = () => {
   const dispatch = useDispatch();
@@ -33,9 +34,11 @@ const ProductReviews = () => {
     dispatch(deleteReviews(reviewId, productId));
   };
 
+  const PRODUCT_ID_LENGTH = 24;
+
   const productReviewsSubmitHandler = (e) => {
     e.preventDefault();
-    if (productId.length === 24) {
+    if (productId.length === PRODUCT_ID_LENGTH) {
       dispatch(getAllReviews(productId));
     } else {
       toast.error("Please enter a valid Product ID");
@@ -71,7 +74,7 @@ const ProductReviews = () => {
       minWidth: 180,
       flex: 0.4,
       cellClassName: (params) =>
-        params.getValue(params.id, "rating") >= 3 ? "greenColor" : "redColor",
+        params.row.rating >= 3 ? "greenColor" : "redColor",
     },
     {
       field: "actions",
@@ -89,10 +92,10 @@ const ProductReviews = () => {
 
   const rows =
     reviews?.map((item) => ({
-      id: item._id,
-      rating: item.rating,
-      comment: item.comment,
-      user: item.name,
+      id: item._id || "",
+      rating: item.rating || 0,
+      comment: item.comment || "No Comment",
+      user: item.name || "Anonymous",
     })) || [];
 
   return (
@@ -118,12 +121,15 @@ const ProductReviews = () => {
             <Button
               id="createProductBtn"
               type="submit"
-              disabled={loading || productId === ""}>
-              Search
+              disabled={loading || productId === ""}
+              startIcon={loading ? <Loader size={20} /> : null}>
+              {loading ? "Searching..." : "Search"}
             </Button>
           </form>
 
-          {reviews && reviews.length > 0 ? (
+          {loading ? (
+            <Loader />
+          ) : reviews && reviews.length > 0 ? (
             <DataGrid
               rows={rows}
               columns={columns}

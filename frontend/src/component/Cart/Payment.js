@@ -101,7 +101,13 @@ const Payment = () => {
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      toast.error(error.response.data.message);
+      if (error.response && error.response.status === 401) {
+        toast.error("Unauthorized! Please log in.");
+        // window.location.href = "/login"; // Redirect to login
+        navigate("/login");
+      } else {
+        toast.error(error.response.data.message);
+      }
     }
   };
 

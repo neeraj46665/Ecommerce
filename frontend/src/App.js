@@ -38,6 +38,10 @@ import ProductReviews from "./component/Admin/ProductReviews";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import Contact from "./component/layout/Contact/Contact.js";
+import About from "./component/layout/About/About.js";
+import NotFound from "./component/layout/Not Found/NotFound.js";
+import Unauthorized from "./component/layout/unAuthorized/unAuth.js";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -69,14 +73,15 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/products" element={<Products />} />
-
         <Route path="/products/:keyword" element={<Products />} />
-
         <Route path="/search" element={<Search />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<LoginSignUp />} />
         <Route path="/password/forgot" element={<ForgotPassword />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
+        <Route path="/password/reset/:token" element={<ResetPassword />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
         <Route
           path="/account"
           element={<ProtectedRoute isAdmin={false} element={<Profile />} />}
@@ -103,7 +108,6 @@ function App() {
             <ProtectedRoute isAdmin={false} element={<OrderSuccess />} />
           }
         />
-
         <Route
           path="/order/confirm"
           element={
@@ -160,7 +164,6 @@ function App() {
             <ProtectedRoute isAdmin={true} element={<ProductReviews />} />
           }
         />
-
         <Route
           path="/process/payment"
           element={
@@ -169,14 +172,17 @@ function App() {
                 <Payment />
               </Elements>
             ) : (
-              <div>Stripe API key is missing</div>
+              <NotFound />
             )
           }
         />
-        {/* <Route
-          path="/admin/dashboard"
-          element={<ProtectedRoute isAdmin={false} element={<Dashboard />} />}
-        /> */}
+        <Route path="*" element={<NotFound />} /> {/* Catch-all for 404 */}
+        <Route
+          path="/unauthorized"
+          element={
+            <ProtectedRoute isAdmin={false} element={<Unauthorized />} />
+          }
+        />
       </Routes>
       <Footer />
     </Router>

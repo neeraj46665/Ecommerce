@@ -83,6 +83,7 @@ const LoginSignUp = () => {
     // Handle error if it exists
     if (error) {
       toast.error(error.response ? error.response.data.message : error.message);
+
       dispatch(clearErrors()); // Optional: clear the error after handling it
     }
 
