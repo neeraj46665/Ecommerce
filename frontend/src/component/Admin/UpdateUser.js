@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useAlert } from "react-alert";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import PersonIcon from "@material-ui/icons/Person";
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import PersonIcon from "@mui/icons-material/Person";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import SideBar from "./Sidebar";
 import { UPDATE_USER_RESET } from "../../constants/userConstants";
 import {
@@ -15,11 +14,10 @@ import {
 } from "../../actions/userAction";
 import Loader from "../layout/Loader/Loader";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const UpdateUser = ({ history, match }) => {
+const UpdateUser = () => {
   const dispatch = useDispatch();
-  const alert = toast();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -35,16 +33,15 @@ const UpdateUser = ({ history, match }) => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
 
-  const userId = id;
-
   useEffect(() => {
-    if (user && user._id !== userId) {
-      dispatch(getUserDetails(userId));
+    if (user && user._id !== id) {
+      dispatch(getUserDetails(id));
     } else {
       setName(user.name);
       setEmail(user.email);
       setRole(user.role);
     }
+
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
@@ -60,18 +57,17 @@ const UpdateUser = ({ history, match }) => {
       navigate("/admin/users");
       dispatch({ type: UPDATE_USER_RESET });
     }
-  }, [dispatch, alert, error, navigate, isUpdated, updateError, user, userId]);
+  }, [dispatch, error, updateError, isUpdated, user, id, navigate]);
 
   const updateUserSubmitHandler = (e) => {
     e.preventDefault();
 
     const myForm = new FormData();
-
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("role", role);
 
-    dispatch(updateUser(userId, myForm));
+    dispatch(updateUser(id, myForm));
   };
 
   return (
@@ -121,9 +117,7 @@ const UpdateUser = ({ history, match }) => {
               <Button
                 id="createProductBtn"
                 type="submit"
-                disabled={
-                  updateLoading ? true : false || role === "" ? true : false
-                }>
+                disabled={updateLoading || role === ""}>
                 Update
               </Button>
             </form>

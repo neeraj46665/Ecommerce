@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid"; // Update to use @mui/x-data-grid
-import "./productList.css";
+import { DataGrid } from "@mui/x-data-grid"; // DataGrid for displaying orders
+import "./productList.css"; // Styles for the component
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material"; // Update import for Material UI
+import { Button } from "@mui/material"; // Material UI button
 import MetaData from "../layout/MetaData";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,7 +19,6 @@ import { toast } from "react-toastify";
 const OrderList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const alert = toast();
 
   const { error, orders } = useSelector((state) => state.allOrders);
   const { error: deleteError, isDeleted } = useSelector((state) => state.order);
@@ -46,7 +45,7 @@ const OrderList = () => {
     }
 
     dispatch(getAllOrders());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted]);
+  }, [dispatch, error, deleteError, navigate, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },

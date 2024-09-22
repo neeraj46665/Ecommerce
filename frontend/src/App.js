@@ -30,6 +30,11 @@ import Dashboard from "./component/Admin/Dashboard.js";
 import ProductList from "./component/Admin/ProductList.js";
 import NewProduct from "./component/Admin/NewProduct";
 import UpdateProduct from "./component/Admin/UpdateProduct";
+import OrderList from "./component/Admin/OrderList.js";
+import ProcessOrder from "./component/Admin/ProcessOrder";
+import UsersList from "./component/Admin/UsersList";
+import UpdateUser from "./component/Admin/UpdateUser";
+import ProductReviews from "./component/Admin/ProductReviews";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -131,6 +136,28 @@ function App() {
           path="/admin/product/:id"
           element={
             <ProtectedRoute isAdmin={true} element={<UpdateProduct />} />
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={<ProtectedRoute isAdmin={true} element={<OrderList />} />}
+        />
+        <Route
+          path="/admin/order/:id"
+          element={<ProtectedRoute isAdmin={true} element={<ProcessOrder />} />}
+        />
+        <Route
+          path="/admin/users"
+          element={<ProtectedRoute isAdmin={true} element={<UsersList />} />}
+        />
+        <Route
+          path="/admin/user/:id"
+          element={<ProtectedRoute isAdmin={true} element={<UpdateUser />} />}
+        />
+        <Route
+          path="/admin/reviews"
+          element={
+            <ProtectedRoute isAdmin={true} element={<ProductReviews />} />
           }
         />
 

@@ -271,7 +271,7 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 
   await cloudinary.v2.uploader.destroy(imageId);
 
-  await user.remove();
+  await user.findByIdAndDelete(req.params.id);
 
   res.status(200).json({
     success: true,

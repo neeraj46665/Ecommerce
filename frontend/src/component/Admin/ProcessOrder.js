@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import MetaData from "../layout/MetaData";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Typography, Button } from "@mui/material"; // Update to use @mui/material
+import { Typography, Button } from "@mui/material"; // Material UI components
 import SideBar from "./Sidebar";
 import {
   getOrderDetails,
@@ -13,14 +13,12 @@ import Loader from "../layout/Loader/Loader";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { UPDATE_ORDER_RESET } from "../../constants/orderConstants";
 import "./processOrder.css";
+import { toast } from "react-toastify";
 
-import toast from "react-toastify";
-
-const ProcessOrder = ({ history, match }) => {
+const ProcessOrder = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const alert = toast();
 
   const { order, error, loading } = useSelector((state) => state.orderDetails);
   const { error: updateError, isUpdated } = useSelector((state) => state.order);
@@ -44,14 +42,14 @@ const ProcessOrder = ({ history, match }) => {
       navigate("/admin/orders"); // Redirect after update
     }
 
-    dispatch(getOrderDetails(match.params.id));
-  }, [dispatch, alert, error, id, isUpdated, updateError, navigate]);
+    dispatch(getOrderDetails(id)); // Fetch order details based on the ID
+  }, [dispatch, error, id, isUpdated, updateError, navigate]);
 
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
     const myForm = new FormData();
     myForm.set("status", status);
-    dispatch(updateOrder(id, myForm));
+    dispatch(updateOrder(id, myForm)); // Dispatch order update action
   };
 
   return (
@@ -61,7 +59,7 @@ const ProcessOrder = ({ history, match }) => {
         <SideBar />
         <div className="newProductContainer">
           {loading ? (
-            <Loader />
+            <Loader /> // Show loader while fetching order details
           ) : (
             <div
               className="confirmOrderPage"

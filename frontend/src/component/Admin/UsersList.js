@@ -1,22 +1,20 @@
 import React, { Fragment, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import "./productList.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import SideBar from "./Sidebar";
 import { getAllUsers, clearErrors, deleteUser } from "../../actions/userAction";
 import { DELETE_USER_RESET } from "../../constants/userConstants";
 import { toast } from "react-toastify";
 
-const UsersList = ({ history }) => {
+const UsersList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const alert = toast();
 
   const { error, users } = useSelector((state) => state.allUsers);
 
@@ -47,8 +45,9 @@ const UsersList = ({ history }) => {
       dispatch({ type: DELETE_USER_RESET });
     }
 
+    // Only dispatch getAllUsers once on mount
     dispatch(getAllUsers());
-  }, [dispatch, alert, error, deleteError, navigate, isDeleted, message]);
+  }, [dispatch, error, deleteError, isDeleted, message, navigate]); // Ensure correct dependencies
 
   const columns = [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
@@ -65,20 +64,14 @@ const UsersList = ({ history }) => {
       minWidth: 150,
       flex: 0.5,
     },
-
     {
       field: "role",
       headerName: "Role",
-      type: "number",
       minWidth: 150,
-      flex: 0.3,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "role") === "admin"
-          ? "greenColor"
-          : "redColor";
-      },
+      flex: 0.5,
+      cellClassName: (params) =>
+        params.row.role === "admin" ? "adminClass" : "",
     },
-
     {
       field: "actions",
       flex: 0.3,
@@ -89,14 +82,10 @@ const UsersList = ({ history }) => {
       renderCell: (params) => {
         return (
           <Fragment>
-            <Link to={`/admin/user/${params.getValue(params.id, "id")}`}>
+            <Link to={`/admin/user/${params.row.id}`}>
               <EditIcon />
             </Link>
-
-            <Button
-              onClick={() =>
-                deleteUserHandler(params.getValue(params.id, "id"))
-              }>
+            <Button onClick={() => deleteUserHandler(params.row.id)}>
               <DeleteIcon />
             </Button>
           </Fragment>
@@ -105,17 +94,12 @@ const UsersList = ({ history }) => {
     },
   ];
 
-  const rows = [];
-
-  users &&
-    users.forEach((item) => {
-      rows.push({
-        id: item._id,
-        role: item.role,
-        email: item.email,
-        name: item.name,
-      });
-    });
+  const rows = users.map((item) => ({
+    id: item._id,
+    role: item.role,
+    email: item.email,
+    name: item.name,
+  }));
 
   return (
     <Fragment>

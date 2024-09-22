@@ -193,6 +193,7 @@ export const getAllUsers = () => async (dispatch) => {
 };
 
 // get  User Details
+// get  User Details
 export const getUserDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: USER_DETAILS_REQUEST });

@@ -90,21 +90,17 @@ const ProductList = () => {
       flex: 0.3,
       headerName: "Actions",
       minWidth: 150,
-      type: "number",
       sortable: false,
-      renderCell: (params) => {
-        return (
-          <Fragment>
-            <Link to={`/admin/product/${params.row.id}`}>
-              <EditIcon />
-            </Link>
-
-            <Button onClick={() => handleClickOpen(params.row.id)}>
-              <DeleteIcon />
-            </Button>
-          </Fragment>
-        );
-      },
+      renderCell: (params) => (
+        <Fragment>
+          <Link to={`/admin/product/${params.row.id}`}>
+            <EditIcon />
+          </Link>
+          <Button onClick={() => handleClickOpen(params.row.id)}>
+            <DeleteIcon />
+          </Button>
+        </Fragment>
+      ),
     },
   ];
 
@@ -124,7 +120,6 @@ const ProductList = () => {
         <SideBar />
         <div className="productListContainer">
           <h1 id="productListHeading">ALL PRODUCTS</h1>
-
           <DataGrid
             rows={rows}
             columns={columns}
