@@ -16,7 +16,7 @@ import {
 import { DELETE_ORDER_RESET } from "../../constants/orderConstants";
 import { toast } from "react-toastify";
 
-const OrderList = ({ history }) => {
+const OrderList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const alert = toast();
