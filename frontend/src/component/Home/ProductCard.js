@@ -6,7 +6,12 @@ import StarRatings from "react-star-ratings";
 const ProductCard = ({ product }) => {
   return (
     <Link className="productCard" to={`/product/${product._id}`}>
-      <img src={product.images[0].url} alt={product.name} />
+      <img
+        src={
+          product.images[0] ? product.images[0].url : "../../images/noimage.png"
+        }
+        alt={product.name}
+      />
       <p>{product.name}</p>
       <div>
         <StarRatings

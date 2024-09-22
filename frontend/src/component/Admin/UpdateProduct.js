@@ -5,26 +5,24 @@ import {
   updateProduct,
   getProductDetails,
 } from "../../actions/productAction";
-import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
-import AccountTreeIcon from "@material-ui/icons/AccountTree";
-import DescriptionIcon from "@material-ui/icons/Description";
-import StorageIcon from "@material-ui/icons/Storage";
-import SpellcheckIcon from "@material-ui/icons/Spellcheck";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import { Button } from "@mui/material";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import DescriptionIcon from "@mui/icons-material/Description";
+import StorageIcon from "@mui/icons-material/Storage";
+import SpellcheckIcon from "@mui/icons-material/Spellcheck";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import SideBar from "./Sidebar";
 import { UPDATE_PRODUCT_RESET } from "../../constants/productConstants";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
-const UpdateProduct = ({ history, match }) => {
+const UpdateProduct = () => {
   const dispatch = useDispatch();
-  const alert = toast();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id: productId } = useParams();
 
   const { error, product } = useSelector((state) => state.productDetails);
-
   const {
     loading,
     error: updateError,
@@ -50,10 +48,8 @@ const UpdateProduct = ({ history, match }) => {
     "SmartPhones",
   ];
 
-  const productId = id;
-
   useEffect(() => {
-    if (product && product._id !== productId) {
+    if (!product || product._id !== productId) {
       dispatch(getProductDetails(productId));
     } else {
       setName(product.name);
@@ -63,6 +59,7 @@ const UpdateProduct = ({ history, match }) => {
       setStock(product.Stock);
       setOldImages(product.images);
     }
+
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
@@ -78,37 +75,26 @@ const UpdateProduct = ({ history, match }) => {
       navigate("/admin/products");
       dispatch({ type: UPDATE_PRODUCT_RESET });
     }
-  }, [
-    dispatch,
-    alert,
-    error,
-    navigate,
-    isUpdated,
-    productId,
-    product,
-    updateError,
-  ]);
+  }, [dispatch, productId, product, error, updateError, isUpdated, navigate]);
 
   const updateProductSubmitHandler = (e) => {
     e.preventDefault();
 
     const myForm = new FormData();
-
     myForm.set("name", name);
-    myForm.set("price", price);
+    myForm.set("price", parseFloat(price)); // Convert to float
     myForm.set("description", description);
     myForm.set("category", category);
-    myForm.set("Stock", Stock);
+    myForm.set("Stock", parseInt(Stock)); // Convert to integer
 
     images.forEach((image) => {
-      myForm.append("images", image);
+      myForm.set("images", image);
     });
     dispatch(updateProduct(productId, myForm));
   };
 
   const updateProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
-
     setImages([]);
     setImagesPreview([]);
     setOldImages([]);
@@ -119,7 +105,7 @@ const UpdateProduct = ({ history, match }) => {
       reader.onload = () => {
         if (reader.readyState === 2) {
           setImagesPreview((old) => [...old, reader.result]);
-          setImages((old) => [...old, reader.result]);
+          setImages((old) => [...old, file]); // Use the file instead of the preview URL for uploads
         }
       };
 
@@ -129,7 +115,7 @@ const UpdateProduct = ({ history, match }) => {
 
   return (
     <Fragment>
-      <MetaData title="Create Product" />
+      <MetaData title="Update Product" />
       <div className="dashboard">
         <SideBar />
         <div className="newProductContainer">
@@ -137,7 +123,7 @@ const UpdateProduct = ({ history, match }) => {
             className="createProductForm"
             encType="multipart/form-data"
             onSubmit={updateProductSubmitHandler}>
-            <h1>Create Product</h1>
+            <h1>Update Product</h1>
 
             <div>
               <SpellcheckIcon />
@@ -162,7 +148,6 @@ const UpdateProduct = ({ history, match }) => {
 
             <div>
               <DescriptionIcon />
-
               <textarea
                 placeholder="Product Description"
                 value={description}
@@ -199,7 +184,7 @@ const UpdateProduct = ({ history, match }) => {
             <div id="createProductFormFile">
               <input
                 type="file"
-                name="avatar"
+                name="images"
                 accept="image/*"
                 onChange={updateProductImagesChange}
                 multiple
@@ -219,11 +204,8 @@ const UpdateProduct = ({ history, match }) => {
               ))}
             </div>
 
-            <Button
-              id="createProductBtn"
-              type="submit"
-              disabled={loading ? true : false}>
-              Create
+            <Button id="createProductBtn" type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update Product"}
             </Button>
           </form>
         </div>

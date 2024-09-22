@@ -2,22 +2,22 @@ import React, { Fragment, useEffect, useState } from "react";
 import "./newProduct.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearErrors, createProduct } from "../../actions/productAction";
-import { useAlert } from "react-alert";
-import { Button } from "@mui/material"; // Updated import for Material UI
+import { Button } from "@mui/material";
 import MetaData from "../layout/MetaData";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import DescriptionIcon from "@mui/icons-material/Description";
 import StorageIcon from "@mui/icons-material/Storage";
 import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-
 import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
 
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 const NewProduct = () => {
   const dispatch = useDispatch();
-  const alert = useAlert();
-
+  const navigate = useNavigate();
   const { loading, error, success } = useSelector((state) => state.newProduct);
 
   const [name, setName] = useState("");
@@ -26,7 +26,9 @@ const NewProduct = () => {
   const [category, setCategory] = useState("");
   const [Stock, setStock] = useState(0);
   const [images, setImages] = useState([]);
-  const [imagesPreview, setImagesPreview] = useState([]);
+  const [imagesPreview, setImagesPreview] = useState([
+    "../../images/noimage.png",
+  ]);
 
   const categories = [
     "Laptop",
@@ -40,16 +42,24 @@ const NewProduct = () => {
 
   useEffect(() => {
     if (error) {
-      alert.error(error);
+      toast.error(error);
       dispatch(clearErrors());
     }
 
     if (success) {
-      alert.success("Product Created Successfully");
-      history.push("/admin/dashboard");
+      toast.success("Product Created Successfully");
+      navigate("/admin/dashboard");
       dispatch({ type: NEW_PRODUCT_RESET });
+      // Reset form fields
+      setName("");
+      setPrice(0);
+      setDescription("");
+      setCategory("");
+      setStock(0);
+      setImages([]);
+      setImagesPreview([]);
     }
-  }, [dispatch, alert, error, history, success]);
+  }, [dispatch, error, navigate, success]);
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();
@@ -64,6 +74,7 @@ const NewProduct = () => {
     images.forEach((image) => {
       myForm.append("images", image);
     });
+
     dispatch(createProduct(myForm));
   };
 
@@ -77,7 +88,7 @@ const NewProduct = () => {
       reader.onload = () => {
         if (reader.readyState === 2) {
           setImagesPreview((old) => [...old, reader.result]);
-          setImages((old) => [...old, file]); // Store actual file for FormData
+          setImages((old) => [...old, file]);
         }
       };
       reader.readAsDataURL(file);
@@ -95,7 +106,6 @@ const NewProduct = () => {
             encType="multipart/form-data"
             onSubmit={createProductSubmitHandler}>
             <h1>Create Product</h1>
-
             <div>
               <SpellcheckIcon />
               <input
@@ -112,11 +122,10 @@ const NewProduct = () => {
                 type="number"
                 placeholder="Price"
                 required
-                value={price} // Added value
+                value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
             </div>
-
             <div>
               <DescriptionIcon />
               <textarea
@@ -126,7 +135,6 @@ const NewProduct = () => {
                 cols="30"
                 rows="1"></textarea>
             </div>
-
             <div>
               <AccountTreeIcon />
               <select onChange={(e) => setCategory(e.target.value)} required>
@@ -138,18 +146,16 @@ const NewProduct = () => {
                 ))}
               </select>
             </div>
-
             <div>
               <StorageIcon />
               <input
                 type="number"
                 placeholder="Stock"
                 required
-                value={Stock} // Added value
+                value={Stock}
                 onChange={(e) => setStock(e.target.value)}
               />
             </div>
-
             <div id="createProductFormFile">
               <input
                 type="file"
@@ -159,15 +165,13 @@ const NewProduct = () => {
                 multiple
               />
             </div>
-
             <div id="createProductFormImage">
               {imagesPreview.map((image, index) => (
                 <img key={index} src={image} alt="Product Preview" />
               ))}
             </div>
-
             <Button id="createProductBtn" type="submit" disabled={loading}>
-              Create
+              {loading ? "Creating..." : "Create"}
             </Button>
           </form>
         </div>

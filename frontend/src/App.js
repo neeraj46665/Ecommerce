@@ -28,6 +28,8 @@ import MyOrders from "./component/Order/MyOrders.js";
 import OrderDetails from "./component/Order/OrderDetails.js";
 import Dashboard from "./component/Admin/Dashboard.js";
 import ProductList from "./component/Admin/ProductList.js";
+import NewProduct from "./component/Admin/NewProduct";
+import UpdateProduct from "./component/Admin/UpdateProduct";
 import axios from "axios";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -120,6 +122,16 @@ function App() {
         <Route
           path="/admin/products"
           element={<ProtectedRoute isAdmin={true} element={<ProductList />} />}
+        />
+        <Route
+          path="/admin/product"
+          element={<ProtectedRoute isAdmin={true} element={<NewProduct />} />}
+        />
+        <Route
+          path="/admin/product/:id"
+          element={
+            <ProtectedRoute isAdmin={true} element={<UpdateProduct />} />
+          }
         />
 
         <Route
