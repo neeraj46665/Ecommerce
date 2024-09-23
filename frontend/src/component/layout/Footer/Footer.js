@@ -21,15 +21,19 @@ const Footer = () => {
       </div>
 
       <div className="rightFooter">
-        <h4>Follow Us</h4>
-        <a href="https://www.instagram.com/its_nitin_kumar18?igsh=MXd4cXlwYmtudHB1Mg==">
-          Instagram
+        <h4>Contact Me</h4>
+        <a
+          href="https://nitinkumargits.github.io/Portfolio-Official/"
+          target="blank">
+          Portfolio
         </a>
-        <a href="https://www.linkedin.com/in/nitin-kumar-b0362b27a/">
+        <a
+          href="https://www.linkedin.com/in/nitin-kumar-b0362b27a/"
+          target="blank">
           Linkedin
         </a>
-        <a href="https://nitinkumargits.github.io/Portfolio-Official/">
-          Portfolio
+        <a href="mailto:nitinkwork18@gmail.com" target="blank">
+          Mail
         </a>
       </div>
     </footer>

@@ -21,12 +21,8 @@ const Profile = () => {
     }
 
     if (error) {
-      if (error.response && error.response.status === 401) {
-        toast.error("Unauthorized! Please log in.");
-        navigate("/login");
-      } else {
-        toast.error(error); // Handle other errors
-      }
+      toast.error(error); // Handle other errors
+      navigate("/login");
     }
   }, [navigate, isAuthenticated, error]);
 

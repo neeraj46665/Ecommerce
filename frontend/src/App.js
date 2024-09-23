@@ -41,7 +41,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import Contact from "./component/layout/Contact/Contact.js";
 import About from "./component/layout/About/About.js";
 import NotFound from "./component/layout/Not Found/NotFound.js";
-import Unauthorized from "./component/layout/unAuthorized/unAuth.js";
+// import Unauthorized from "./component/layout/unAuthorized/unAuth.js";
+import { toast } from "react-toastify";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -49,8 +50,14 @@ function App() {
   const [stripeApiKey, setStripeApiKey] = useState("");
 
   async function getStripeApiKey() {
-    const { data } = await axios.get("/api/v1/stripeapikey");
-    setStripeApiKey(data.stripeApiKey);
+    try {
+      const { data } = await axios.get("/api/v1/stripeapikey");
+      setStripeApiKey(data.stripeApiKey);
+    } catch (error) {
+      toast.error(
+        "Login to Enjoy Ecommerce-services || Error fetching Stripe API key"
+      );
+    }
   }
 
   React.useEffect(() => {
@@ -176,13 +183,7 @@ function App() {
             )
           }
         />
-        <Route path="*" element={<NotFound />} /> {/* Catch-all for 404 */}
-        <Route
-          path="/unauthorized"
-          element={
-            <ProtectedRoute isAdmin={false} element={<Unauthorized />} />
-          }
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </Router>

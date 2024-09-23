@@ -8,7 +8,7 @@ import {
   newReview,
 } from "../../actions/productAction";
 import { addItemsToCart } from "../../actions/cartAction";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MetaData from "../layout/MetaData";
 import { toast } from "react-toastify";
 import Loader from "../layout/Loader/Loader"; // Assuming you have a Loader component
@@ -24,6 +24,8 @@ import DialogActions from "@mui/material/DialogActions";
 const ProductDetails = () => {
   const { id } = useParams(); // Get the id from the URL
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.user);
 
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
@@ -67,24 +69,29 @@ const ProductDetails = () => {
     open ? setOpen(false) : setOpen(true);
   };
   const reviewSubmitHandler = () => {
-    const myForm = new FormData();
+    if (!isAuthenticated) {
+      // Redirect to login if not authenticated
+      toast.error("Please log in to submit a review.");
+      navigate("/login");
+    } else {
+      // Proceed with review submission logic
+      toast.success("Submitting review...");
 
-    myForm.set("rating", rating);
-    myForm.set("comment", comment);
-    myForm.set("productId", id);
+      const myForm = new FormData();
 
-    dispatch(newReview(myForm));
+      myForm.set("rating", rating);
+      myForm.set("comment", comment);
+      myForm.set("productId", id);
 
-    setOpen(false);
+      dispatch(newReview(myForm));
+
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
     if (error) {
-      toast.error(error, {
-        closeButton: true, // Enable the close button
-        closeOnClick: true, // Allow toast to close on click
-        autoClose: 5000, // Auto close after 5 seconds (optional)
-      });
+      toast.error(error);
       dispatch(clearErrors()); // Clear the errors
     }
 
@@ -171,7 +178,7 @@ const ProductDetails = () => {
             aria-labelledby="simple-dialog-title"
             open={open}
             onClose={submitReviewToggle}>
-            <DialogTitle>Submit Review</DialogTitle>
+            <DialogTitle>.</DialogTitle>
             <DialogContent className="submitDialog">
               <Rating
                 onChange={(e) => setRating(e.target.value)}

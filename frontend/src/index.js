@@ -9,18 +9,18 @@ import "react-toastify/dist/ReactToastify.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
+    <App />
     <ToastContainer
       position="bottom-center"
       autoClose={5000}
       hideProgressBar={false}
       newestOnTop={false}
-      closeOnClick
+      closeOnClick={true}
       rtl={false}
-      pauseOnFocusLoss
+      pauseOnFocusLoss={false}
       draggable
       pauseOnHover
-      transition="bounce"
+      transition="Bounce" // or Bounce if imported as component
     />
-    <App />
   </Provider>
 );
