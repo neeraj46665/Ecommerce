@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef, useMemo } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
 import { useSelector, useDispatch } from "react-redux";
 import MetaData from "../layout/MetaData";
@@ -38,14 +38,17 @@ const Payment = () => {
     amount: Math.round(orderInfo.totalPrice * 100),
   };
 
-  const order = {
-    shippingInfo,
-    orderItems: cartItems,
-    itemsPrice: orderInfo.subtotal,
-    taxPrice: orderInfo.tax,
-    shippingPrice: orderInfo.shippingCharges,
-    totalPrice: orderInfo.totalPrice,
-  };
+  // Use useMemo to memoize the order object
+  const order = useMemo(() => {
+    return {
+      shippingInfo,
+      orderItems: cartItems,
+      itemsPrice: orderInfo.subtotal,
+      taxPrice: orderInfo.tax,
+      shippingPrice: orderInfo.shippingCharges,
+      totalPrice: orderInfo.totalPrice,
+    };
+  }, [shippingInfo, cartItems, orderInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -92,7 +95,7 @@ const Payment = () => {
             id: result.paymentIntent.id,
             status: result.paymentIntent.status,
           };
-
+          toast.success("Payment Successful");
           dispatch(createOrder(order));
           navigate("/success");
         } else {
@@ -101,13 +104,7 @@ const Payment = () => {
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      if (error.response && error.response.status === 401) {
-        toast.error("Unauthorized! Please log in.");
-        // window.location.href = "/login"; // Redirect to login
-        navigate("/login");
-      } else {
-        toast.error(error.response.data.message);
-      }
+      toast.error(error.response.data.message);
     }
   };
 

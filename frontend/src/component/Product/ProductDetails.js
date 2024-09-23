@@ -61,8 +61,8 @@ const ProductDetails = () => {
   };
 
   const addToCartHandler = () => {
-    dispatch(addItemsToCart(id, quantity));
     toast.success("Item Added To Cart");
+    dispatch(addItemsToCart(id, quantity));
   };
 
   const submitReviewToggle = () => {
@@ -158,7 +158,7 @@ const ProductDetails = () => {
                 <p>
                   Status:
                   <b className={product.Stock < 1 ? "redColor" : "greenColor"}>
-                    {product.Stock < 1 ? "OutOfStock" : "InStock"}
+                    {product.Stock < 1 ? " utOfStock" : " InStock"}
                   </b>
                 </p>
               </div>

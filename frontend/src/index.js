@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { Provider } from "react-redux";
 import store from "./store";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -20,7 +20,7 @@ root.render(
       pauseOnFocusLoss={false}
       draggable
       pauseOnHover
-      transition="Bounce" // or Bounce if imported as component
+      transition={Bounce} // or Bounce if imported as component
     />
   </Provider>
 );

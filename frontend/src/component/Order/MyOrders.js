@@ -6,7 +6,7 @@ import Loader from "../layout/Loader/Loader";
 import { DataGrid } from "@mui/x-data-grid"; // Updated import from MUI
 
 import { Link } from "react-router-dom";
-import Typography from "@mui/material/Typography"; // MUI's material library
+// import Typography from "@mui/material/Typography"; // MUI's material library
 import MetaData from "../layout/MetaData";
 import LaunchIcon from "@mui/icons-material/Launch"; // MUI's icons library
 import { toast } from "react-toastify";
@@ -58,29 +58,31 @@ const MyOrders = () => {
       },
     },
   ];
+  const rows = [];
+
+  orders &&
+    orders.forEach((item, index) => {
+      rows.push({
+        itemsQty: item.orderItems.length,
+        id: item._id,
+        status: item.orderStatus,
+        amount: item.totalPrice,
+      });
+    });
 
   // Fetch orders only once on component mount
   useEffect(() => {
+    toast.success("Your order placed");
     dispatch(myOrders());
   }, [dispatch]);
 
   // Handle errors separately
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error("Something went wrong while placing your order.", error);
       dispatch(clearErrors());
     }
   }, [error, dispatch]);
-
-  // Simplified row creation
-  const rows = orders
-    ? orders.map((order) => ({
-        id: order._id,
-        itemsQty: order.orderItems.length,
-        status: order.orderStatus,
-        amount: order.totalPrice,
-      }))
-    : [];
 
   return (
     <Fragment>
@@ -90,8 +92,8 @@ const MyOrders = () => {
         <Loader />
       ) : (
         <div className="myOrdersPage">
-          <Typography id="myOrdersHeading">{user.name}'s Orders</Typography>
-
+          {/* <Typography id="myOrdersHeading">{user.name}'s Orders</Typography> */}
+          <h1 id="myOrdersHeading">{user.name}'s Orders</h1>
           <DataGrid
             rows={rows}
             columns={columns}
