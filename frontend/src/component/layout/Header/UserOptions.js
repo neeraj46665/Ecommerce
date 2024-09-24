@@ -76,7 +76,7 @@ const UserOptions = ({ user }) => {
         icon={
           <img
             src={user.avatar ? user.avatar?.url : profileImg}
-            alt={"Profile"}
+            alt="Profile"
             className="speedDialIcon"
             loading="lazy"
             onError={(e) => {
@@ -87,7 +87,7 @@ const UserOptions = ({ user }) => {
         }>
         {options.map((item) => (
           <SpeedDialAction
-            key={item.name} // Use index as the key
+            key={item.name} // Unique key for each action
             icon={item.icon}
             tooltipTitle={item.name}
             onClick={item.func}
