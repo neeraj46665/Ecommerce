@@ -59,13 +59,13 @@ function App() {
       );
     }
   }
-
   React.useEffect(() => {
-    webFont.load({
-      google: {
-        families: ["Roboto", "Droid Sans", "Chilanka"],
-      },
-    });
+    if (!window.WebFontLoaded) {
+      webFont.load({
+        google: { families: ["Roboto", "Droid Sans", "Chilanka"] },
+      });
+      window.WebFontLoaded = true;
+    }
 
     store.dispatch(loadUser());
     getStripeApiKey();
@@ -85,7 +85,6 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<LoginSignUp />} />
         <Route path="/password/forgot" element={<ForgotPassword />} />
-        <Route path="/password/reset/:token" element={<ResetPassword />} />
         <Route path="/password/reset/:token" element={<ResetPassword />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />

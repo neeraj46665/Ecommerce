@@ -11,9 +11,8 @@ import { toast, ToastContainer } from "react-toastify";
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // useNavigate hook to programmatically navigate
-  const location = useLocation(); // useLocation hook to get the current location
-  const alert = toast();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { error, loading, isAuthenticated } = useSelector(
     (state) => state.user
   );
@@ -32,7 +31,7 @@ const LoginSignUp = () => {
   });
   const { name, email, password } = user;
 
-  const [avatar, setAvatar] = useState("/Profile.png");
+  const [avatar, setAvatar] = useState(null); // Avatar now stores the actual File object
   const [avatarPreview, setAvatarPreview] = useState("/Profile.png");
 
   const loginSubmit = (e) => {
@@ -42,56 +41,85 @@ const LoginSignUp = () => {
 
   const registerDataChange = (e) => {
     if (e.target.name === "avatar") {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          setAvatarPreview(reader.result);
-          setAvatar(reader.result);
-        }
-      };
-
-      reader.readAsDataURL(e.target.files[0]);
+      const file = e.target.files[0]; // Get the file object
+      setAvatar(file); // Store the file object
+      setAvatarPreview(URL.createObjectURL(file)); // Show the image preview
     } else {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
 
+  // const registerSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const myForm = new FormData();
+  //   myForm.set("name", name);
+  //   myForm.set("email", email);
+  //   myForm.set("password", password);
+
+  //   // Append the avatar file if available
+  //   if (avatar) {
+  //     myForm.append("avatar", avatar); // Append the File object directly
+  //   } else {
+  //     console.error("No avatar selected");
+  //   }
+
+  //   // Log the FormData content for debugging
+  //   for (const pair of myForm.entries()) {
+  //     console.log(`${pair[0]}: ${pair[1]}`);
+  //   }
+
+  //   dispatch(register(myForm)); // Dispatch form data
+  // };
   const registerSubmit = (e) => {
     e.preventDefault();
 
-    const myForm = new FormData();
+    // Client-side validation
+    if (name.length < 4) {
+      toast.error("Name should have more than 4 characters");
+      return;
+    }
 
-    // Append user text fields
+    // Basic email validation using a regex pattern
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      toast.error("Password should be at least 6 characters");
+      return;
+    }
+
+    // Check if an avatar has been selected
+    if (!avatar) {
+      toast.error("Please upload an avatar");
+      return;
+    }
+
+    const myForm = new FormData();
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
+    myForm.append("avatar", avatar);
 
-    // Append avatar file if available
-    if (avatar) {
-      myForm.append("avatar", avatar);
-    } else {
-      console.error("No avatar selected");
-    }
-    // Dispatch the form data
-    dispatch(register(myForm)); // Assuming `register` is your Redux action
+    dispatch(register(myForm)); // Dispatch form data to Redux action
   };
 
   const redirect = location.search ? location.search.split("=")[1] : "/account";
 
   useEffect(() => {
-    // Handle error if it exists
     if (error) {
       toast.error(error.response ? error.response.data.message : error.message);
-
-      dispatch(clearErrors()); // Optional: clear the error after handling it
+      dispatch(clearErrors());
     }
 
-    // Redirect if authenticated
     if (isAuthenticated) {
-      navigate(redirect); // Use useNavigate to redirect after authentication
+      navigate(redirect);
     }
-  }, [dispatch, error, alert, isAuthenticated, navigate, redirect]);
+  }, [dispatch, error, isAuthenticated, navigate, redirect]);
 
   const switchTabs = (e, tab) => {
     if (tab === "login") {
@@ -146,9 +174,10 @@ const LoginSignUp = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                   />
                 </div>
-                <Link to="/password/forgot">Forget Password ?</Link>
+                <Link to="/password/forgot">Forget Password?</Link>
                 <input type="submit" value="Login" className="loginBtn" />
               </form>
+
               <form
                 className="signUpForm"
                 ref={registerTab}

@@ -11,7 +11,6 @@ const Search = () => {
     e.preventDefault();
     if (keyword.trim()) {
       navigate(`/products/${keyword}`); // Use navigate for navigation
-      console.log("Submitted keyword:", keyword); // Log the keyword to check its value
     } else {
       navigate("/products");
     }

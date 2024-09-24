@@ -56,8 +56,6 @@ const Products = () => {
       dispatch(clearErrors());
     }
 
-    // console.log("keyword : ", keyword);
-
     dispatch(getProduct(keyword || "", currentPage, price, category, ratings));
   }, [dispatch, keyword, currentPage, price, category, ratings, error]);
 
