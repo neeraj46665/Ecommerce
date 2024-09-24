@@ -72,7 +72,6 @@ const MyOrders = () => {
 
   // Fetch orders only once on component mount
   useEffect(() => {
-    toast.success("Your order placed");
     dispatch(myOrders());
   }, [dispatch]);
 

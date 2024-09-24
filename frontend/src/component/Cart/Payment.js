@@ -96,6 +96,7 @@ const Payment = () => {
             status: result.paymentIntent.status,
           };
           toast.success("Payment Successful");
+          toast.success("Your order placed");
           dispatch(createOrder(order));
           navigate("/success");
         } else {

@@ -5,6 +5,7 @@ import Loader from "../layout/Loader/Loader";
 import { Link, useNavigate } from "react-router-dom";
 import "./Profile.css";
 import { toast } from "react-toastify";
+import profileImg from "../../images/Profile.png";
 
 const Profile = () => {
   const {
@@ -21,7 +22,7 @@ const Profile = () => {
     }
 
     if (error) {
-      toast.error(error); // Handle other errors
+      toast.error("Please log in to view your profile.");
       navigate("/login");
     }
   }, [navigate, isAuthenticated, error]);
@@ -37,8 +38,13 @@ const Profile = () => {
             <div>
               <h1>My Profile</h1>
               <img
-                src={user.avatar?.url || "/Profile.png"}
+                src={user.avatar ? user.avatar?.url : profileImg}
                 alt={user.name || "User"}
+                loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null; // prevents infinite loop if fallback image fails
+                  e.target.src = profileImg; // set fallback image (profile.png) on error
+                }}
               />
               <Link to="/me/update">Edit Profile</Link>
             </div>
@@ -55,7 +61,9 @@ const Profile = () => {
                 <h4>Joined On</h4>
                 <p>
                   {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
+                    ? new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "long",
+                      }).format(new Date(user.createdAt))
                     : "N/A"}
                 </p>
               </div>

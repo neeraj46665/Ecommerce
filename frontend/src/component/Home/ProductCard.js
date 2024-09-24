@@ -1,15 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 import StarRatings from "react-star-ratings";
+import noImage from "../../images/noimage.png"; // Import default image
 
 const ProductCard = ({ product }) => {
   return (
     <Link className="productCard" to={`/product/${product._id}`}>
       <img
-        src={
-          product.images[0] ? product.images[0].url : "../../images/noimage.png"
-        }
+        src={product.images[0] ? product.images[0].url : noImage} // Use imported image
         alt={product.name}
       />
       <p>{product.name}</p>

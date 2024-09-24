@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { logout } from "../../../actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
+import profileImg from "../../../images/Profile.png";
 
 const UserOptions = ({ user }) => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -74,9 +75,14 @@ const UserOptions = ({ user }) => {
         className="speedDial"
         icon={
           <img
+            src={user.avatar ? user.avatar?.url : profileImg}
+            alt={"Profile"}
             className="speedDialIcon"
-            src={user?.avatar?.url ? user.avatar.url : "/Profile.png"}
-            alt="Profile"
+            loading="lazy"
+            onError={(e) => {
+              e.target.onerror = null; // prevents infinite loop if fallback image fails
+              e.target.src = profileImg; // set fallback image (profile.png) on error
+            }}
           />
         }>
         {options.map((item) => (
