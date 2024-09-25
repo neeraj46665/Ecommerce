@@ -6,39 +6,84 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
-// Register a User
-exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password } = req.body;
+//upload-request.cloudinary.com/dmsyppekz/087bf5bb234bda2f8fc0ccf84afb2b3b
 
-  let avatar = {
-    public_id: "default_avatar_public_id", // Replace with actual default public ID
+// Register a User
+// exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+//   const { name, email, password } = req.body;
+
+//   let avatar = {
+//     public_id: "default_avatar_public_id", // Replace with actual default public ID
+//     url: "https://res.cloudinary.com/dmsyppekz/image/upload/v1727187600/Profile_gslglc.png", // Default avatar URL
+//   };
+
+//   // If the user provided an avatar, upload it to Cloudinary
+//   if (req.body.avatar) {
+//     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+//       folder: "avatars",
+//       width: 150,
+//       crop: "scale",
+//     });
+
+//     avatar = {
+//       public_id: myCloud.public_id,
+//       url: myCloud.secure_url,
+//     };
+//   }
+
+//   // Create the user in the database
+//   const user = await User.create({
+//     name,
+//     email,
+//     password,
+//     avatar, // Use the avatar, whether it's default or uploaded
+//   });
+
+//   // Send a token to the user (assuming sendToken function handles JWT creation)
+//   sendToken(user, 201, res);
+// });
+exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+  const { name, email, password, avatar } = req.body;
+
+  let avatarData = {
+    public_id: "default_avatar_public_id", // Default public_id in case no avatar is uploaded
     url: "https://res.cloudinary.com/dmsyppekz/image/upload/v1727187600/Profile_gslglc.png", // Default avatar URL
   };
 
-  // If the user provided an avatar, upload it to Cloudinary
-  if (req.body.avatar) {
-    const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-      folder: "avatars",
-      width: 150,
-      crop: "scale",
-    });
+  // If the user provides an avatar, attempt to upload it
+  if (avatar) {
+    try {
+      const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+        folder: "avatars",
+        width: 150,
+        crop: "scale",
+      });
 
-    avatar = {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
-    };
+      avatarData = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
+    } catch (error) {
+      return next(
+        new ErrorHandler("Avatar upload failed, please try again", 500)
+      );
+    }
   }
 
-  // Create the user in the database
-  const user = await User.create({
-    name,
-    email,
-    password,
-    avatar, // Use the avatar, whether it's default or uploaded
-  });
+  try {
+    // Create the user in the database with the avatar data
+    const user = await User.create({
+      name,
+      email,
+      password,
+      avatar: avatarData,
+    });
 
-  // Send a token to the user (assuming sendToken function handles JWT creation)
-  sendToken(user, 201, res);
+    // Send token if the user is created successfully
+    sendToken(user, 201, res);
+  } catch (error) {
+    return next(new ErrorHandler("User registration failed", 500));
+  }
 });
 
 // Login User

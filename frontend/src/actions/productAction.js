@@ -83,7 +83,7 @@ export const createProduct = (productData) => async (dispatch) => {
     dispatch({ type: NEW_PRODUCT_REQUEST });
 
     const config = {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "multipart/form-data" }, // Update this to multipart/form-data
     };
 
     const { data } = await axios.post(

@@ -103,7 +103,10 @@ const LoginSignUp = () => {
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("password", password);
-    myForm.append("avatar", avatar);
+    // Avatar upload if selected
+    if (avatar) {
+      myForm.append("avatar", avatar);
+    }
 
     dispatch(register(myForm)); // Dispatch form data to Redux action
   };

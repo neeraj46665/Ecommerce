@@ -2,39 +2,53 @@ const Product = require("../models/productModel");
 const ErrorHander = require("../utils/errorhander");
 const catchAsyncError = require("../middleware/catchAsyncErrors");
 const ApiFeatures = require("../utils/apifeatures");
+const cloudinary = require("cloudinary");
 
-// Create Product---Admin
 exports.createProduct = catchAsyncError(async (req, res, next) => {
   let images = [];
 
+  // Handle both string and array types for images
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
   } else {
-    images = req.body.images;
+    images = req.body.images || [];
   }
 
   const imagesLinks = [];
 
-  for (let i = 0; i < images.length; i++) {
-    const result = await cloudinary.v2.uploader.upload(images[i], {
-      folder: "products",
-    });
+  // Upload images to Cloudinary
+  try {
+    const uploadPromises = images.map((image) =>
+      cloudinary.v2.uploader.upload(image, { folder: "products" })
+    );
 
-    imagesLinks.push({
-      public_id: result.public_id,
-      url: result.secure_url,
+    const results = await Promise.all(uploadPromises);
+
+    results.forEach((result) => {
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
     });
+  } catch (error) {
+    return next(new ErrorHander("Failed to upload images", 500));
   }
 
+  // Set imagesLinks in req.body
   req.body.images = imagesLinks;
   req.body.user = req.user.id;
 
-  const product = await Product.create(req.body);
+  // Create the product in the database
+  try {
+    const product = await Product.create(req.body);
 
-  res.status(201).json({
-    success: true,
-    product,
-  });
+    res.status(201).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    return next(new ErrorHander("Product creation failed", 500));
+  }
 });
 
 //  Get sigle Product Details
