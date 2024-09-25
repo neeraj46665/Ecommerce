@@ -108,8 +108,9 @@ const Payment = () => {
           id: result.paymentIntent.id,
           status: result.paymentIntent.status,
         };
-
+        toast.success("Payment successfull.");
         dispatch(createOrder(order));
+        toast.success("Your order is Placed !");
         navigate("/success");
       } else {
         toast.error("Payment was not successful.");
