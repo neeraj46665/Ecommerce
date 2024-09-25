@@ -5,6 +5,7 @@ import MetaData from "../layout/MetaData";
 import "./ConfirmOrder.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
+import noimage from "../../images/noimage.png";
 
 const ConfirmOrder = () => {
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
@@ -66,10 +67,11 @@ const ConfirmOrder = () => {
               {cartItems &&
                 cartItems.map((item) => (
                   <div key={item.product}>
-                    <img src={item.image} alt="Product" />
-                    <Link to={`/product/${item.product}`}>
-                      {item.name}
-                    </Link>{" "}
+                    <img
+                      src={item.image ? item.image : noimage}
+                      alt="Product"
+                    />
+                    <Link to={`/product/${item.product}`}>{item.name}</Link>{" "}
                     <span>
                       {item.quantity} X ₹{item.price} ={" "}
                       <b>₹{item.price * item.quantity}</b>

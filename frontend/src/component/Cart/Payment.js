@@ -20,6 +20,7 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { createOrder, clearErrors } from "../../actions/orderAction";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import noimage from "../../images/noimage.png";
 
 const Payment = () => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
@@ -42,7 +43,10 @@ const Payment = () => {
   const order = useMemo(() => {
     return {
       shippingInfo,
-      orderItems: cartItems,
+      orderItems: cartItems.map((item) => ({
+        ...item,
+        image: item.image || noimage, // Fallback if image is missing
+      })),
       itemsPrice: orderInfo.subtotal,
       taxPrice: orderInfo.tax,
       shippingPrice: orderInfo.shippingCharges,
@@ -56,10 +60,16 @@ const Payment = () => {
 
     try {
       const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       };
+
+      // Ensure the order total is set before proceeding
+      if (!orderInfo || !orderInfo.totalPrice) {
+        toast.error("Order information is missing.");
+        payBtn.current.disabled = false;
+        return;
+      }
+
       const { data } = await axios.post(
         "/api/v1/payment/process",
         paymentData,
@@ -67,7 +77,10 @@ const Payment = () => {
       );
       const client_secret = data.client_secret;
 
-      if (!stripe || !elements) return;
+      if (!stripe || !elements) {
+        payBtn.current.disabled = false;
+        return;
+      }
 
       const result = await stripe.confirmCardPayment(client_secret, {
         payment_method: {
@@ -89,23 +102,21 @@ const Payment = () => {
       if (result.error) {
         payBtn.current.disabled = false;
         toast.error(result.error.message);
+      } else if (result.paymentIntent.status === "succeeded") {
+        // Proceed with order creation
+        order.paymentInfo = {
+          id: result.paymentIntent.id,
+          status: result.paymentIntent.status,
+        };
+
+        dispatch(createOrder(order));
+        navigate("/success");
       } else {
-        if (result.paymentIntent.status === "succeeded") {
-          order.paymentInfo = {
-            id: result.paymentIntent.id,
-            status: result.paymentIntent.status,
-          };
-          toast.success("Payment Successful");
-          toast.success("Your order placed");
-          dispatch(createOrder(order));
-          navigate("/success");
-        } else {
-          toast.error("There was an issue processing the payment");
-        }
+        toast.error("Payment was not successful.");
       }
     } catch (error) {
       payBtn.current.disabled = false;
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Payment failed.");
     }
   };
 

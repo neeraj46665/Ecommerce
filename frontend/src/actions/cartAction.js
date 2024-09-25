@@ -4,6 +4,7 @@ import {
   SAVE_SHIPPING_INFO,
 } from "../constants/cartConstants";
 import axios from "axios";
+import noimage from "../images/noimage.png";
 
 // Add to Cart
 export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
@@ -15,7 +16,7 @@ export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
       product: data.product._id,
       name: data.product.name,
       price: data.product.price,
-      image: data.product.images[0] ? data.product.images[0].url : "",
+      image: data.product.images[0] ? data.product.images[0].url : noimage,
       stock: data.product.Stock,
       quantity,
     },

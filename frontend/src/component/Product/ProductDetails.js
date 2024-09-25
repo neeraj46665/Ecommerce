@@ -11,18 +11,19 @@ import { addItemsToCart } from "../../actions/cartAction";
 import { useNavigate, useParams } from "react-router-dom";
 import MetaData from "../layout/MetaData";
 import { toast } from "react-toastify";
-import Loader from "../layout/Loader/Loader"; // Assuming you have a Loader component
-import ReviewCard from "./ReviewCard.js";
-
+import Loader from "../layout/Loader/Loader";
+import ReviewCard from "./ReviewCard";
 import Rating from "@mui/material/Rating";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+// Import fallback image
+import noImage from "../../images/noimage.png";
 
 const ProductDetails = () => {
-  const { id } = useParams(); // Get the id from the URL
+  const { id } = useParams(); // Get the product id from the URL
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.user);
@@ -68,23 +69,18 @@ const ProductDetails = () => {
   const submitReviewToggle = () => {
     open ? setOpen(false) : setOpen(true);
   };
+
   const reviewSubmitHandler = () => {
     if (!isAuthenticated) {
-      // Redirect to login if not authenticated
       toast.error("Please log in to submit a review.");
       navigate("/login");
     } else {
-      // Proceed with review submission logic
-      toast.success("Submitting review...");
-
       const myForm = new FormData();
-
       myForm.set("rating", rating);
       myForm.set("comment", comment);
       myForm.set("productId", id);
 
       dispatch(newReview(myForm));
-
       setOpen(false);
     }
   };
@@ -92,7 +88,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
-      dispatch(clearErrors()); // Clear the errors
+      dispatch(clearErrors());
     }
 
     if (reviewError) {
@@ -101,30 +97,42 @@ const ProductDetails = () => {
     }
 
     if (success) {
-      toast.success("Review Submitted Successfully ");
+      toast.success("Review Submitted Successfully");
     }
-    dispatch(getProductDetails(id)); // Fetch product details using id
+
+    dispatch(getProductDetails(id));
   }, [dispatch, id, error, success, reviewError]);
 
   return (
     <Fragment>
       {loading ? (
-        <Loader /> // Correct usage of the Loader component
+        <Loader />
       ) : (
         <Fragment>
           <MetaData title={`${product.name} -- ECOMMERCE`} />
           <div className="ProductDetails">
             <div>
               <Carousel>
-                {product.images &&
+                {product.images && product.images.length > 0 ? (
                   product.images.map((item, i) => (
                     <img
                       className="CarouselImage"
                       key={item.url}
                       src={item.url}
                       alt={`${i} Slide`}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = noImage; // Use imported fallback image
+                      }}
                     />
-                  ))}
+                  ))
+                ) : (
+                  <img
+                    className="CarouselImage"
+                    src={noImage} // Fallback image when no images are available
+                    alt="Fallback Slide"
+                  />
+                )}
               </Carousel>
             </div>
 
@@ -136,7 +144,6 @@ const ProductDetails = () => {
               <div className="detailsBlock-2">
                 <Rating {...options} />
                 <span className="detailsBlock-2-span">
-                  {" "}
                   ({product.numOfReviews} Reviews)
                 </span>
               </div>
@@ -149,16 +156,15 @@ const ProductDetails = () => {
                     <button onClick={increaseQuantity}>+</button>
                   </div>
                   <button
-                    disabled={product.Stock < 1 ? true : false}
+                    disabled={product.Stock < 1}
                     onClick={addToCartHandler}>
                     Add to Cart
                   </button>
                 </div>
-
                 <p>
                   Status:
                   <b className={product.Stock < 1 ? "redColor" : "greenColor"}>
-                    {product.Stock < 1 ? " utOfStock" : " InStock"}
+                    {product.Stock < 1 ? " Out of Stock" : " In Stock"}
                   </b>
                 </p>
               </div>
@@ -172,26 +178,27 @@ const ProductDetails = () => {
               </button>
             </div>
           </div>
+
           <h3 className="reviewsHeading">REVIEWS</h3>
 
           <Dialog
             aria-labelledby="simple-dialog-title"
             open={open}
             onClose={submitReviewToggle}>
-            <DialogTitle>.</DialogTitle>
+            <DialogTitle>Submit Your Review</DialogTitle>
             <DialogContent className="submitDialog">
               <Rating
                 onChange={(e) => setRating(e.target.value)}
                 value={rating}
                 size="large"
               />
-
               <textarea
                 className="submitDialogTextArea"
                 cols="30"
                 rows="5"
                 value={comment}
-                onChange={(e) => setComment(e.target.value)}></textarea>
+                onChange={(e) => setComment(e.target.value)}
+              />
             </DialogContent>
             <DialogActions>
               <Button onClick={submitReviewToggle} color="secondary">
@@ -203,12 +210,11 @@ const ProductDetails = () => {
             </DialogActions>
           </Dialog>
 
-          {product.reviews && product.reviews[0] ? (
+          {product.reviews && product.reviews.length > 0 ? (
             <div className="reviews">
-              {product.reviews &&
-                product.reviews.map((review) => (
-                  <ReviewCard key={review._id} review={review} />
-                ))}
+              {product.reviews.map((review) => (
+                <ReviewCard key={review._id} review={review} />
+              ))}
             </div>
           ) : (
             <p className="noReviews">No Reviews Yet</p>
