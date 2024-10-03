@@ -25,7 +25,7 @@ const UpdateProfile = () => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
-      setAvatarPreview(user.avatar.url);
+      setAvatarPreview(user.avatar ? user.avatar.url : "/Profile.png");
     }
 
     if (error) {
@@ -53,12 +53,17 @@ const UpdateProfile = () => {
   const updateProfileDataChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatarPreview(reader.result);
-        setAvatar(file); // Set the file itself
-      };
-      reader.readAsDataURL(file);
+      if (file.size > 2000000) {
+        // Example: 2MB size limit
+        const reader = new FileReader();
+        reader.onload = () => {
+          setAvatarPreview(reader.result);
+          setAvatar(file); // Set the file itself
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast.error("File size should be less than 2MB.");
+      }
     }
   };
 
@@ -111,6 +116,7 @@ const UpdateProfile = () => {
                   type="submit"
                   value="Update"
                   className="updateProfileBtn"
+                  disabled={loading} // Disable the button while loading
                 />
               </form>
             </div>

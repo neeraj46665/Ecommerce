@@ -102,7 +102,15 @@ export const userReducer = (state = { user: {} }, action) => {
   }
 };
 
-export const profileReducer = (state = {}, action) => {
+export const profileReducer = (
+  state = {
+    loading: false,
+    isUpdated: false,
+    isDeleted: false,
+    error: null,
+  },
+  action
+) => {
   switch (action.type) {
     case UPDATE_PROFILE_REQUEST:
     case UPDATE_PASSWORD_REQUEST:
@@ -112,6 +120,7 @@ export const profileReducer = (state = {}, action) => {
         ...state,
         loading: true,
       };
+
     case UPDATE_PROFILE_SUCCESS:
     case UPDATE_PASSWORD_SUCCESS:
     case UPDATE_USER_SUCCESS:

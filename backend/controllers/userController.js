@@ -6,42 +6,6 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
-//upload-request.cloudinary.com/dmsyppekz/087bf5bb234bda2f8fc0ccf84afb2b3b
-
-// Register a User
-// exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-//   const { name, email, password } = req.body;
-
-//   let avatar = {
-//     public_id: "default_avatar_public_id", // Replace with actual default public ID
-//     url: "https://res.cloudinary.com/dmsyppekz/image/upload/v1727187600/Profile_gslglc.png", // Default avatar URL
-//   };
-
-//   // If the user provided an avatar, upload it to Cloudinary
-//   if (req.body.avatar) {
-//     const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-//       folder: "avatars",
-//       width: 150,
-//       crop: "scale",
-//     });
-
-//     avatar = {
-//       public_id: myCloud.public_id,
-//       url: myCloud.secure_url,
-//     };
-//   }
-
-//   // Create the user in the database
-//   const user = await User.create({
-//     name,
-//     email,
-//     password,
-//     avatar, // Use the avatar, whether it's default or uploaded
-//   });
-
-//   // Send a token to the user (assuming sendToken function handles JWT creation)
-//   sendToken(user, 201, res);
-// });
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, avatar } = req.body;
 
@@ -238,36 +202,57 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
 //     email: req.body.email,
 //   };
 
-//   if (req.file) {
-//     // Remove old avatar from Cloudinary
-//     const user = await User.findById(req.user.id);
-//     if (user.avatar) {
-//       await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+//   try {
+//     const user = await User.findById(req.user.id); // Retrieve the user once at the start
+
+//     // Check if a new avatar is provided in the request body
+//     if (req.body.avatar) {
+//       // Ensure the user has an avatar before trying to delete it
+//       if (user.avatar && user.avatar.public_id) {
+//         await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+//       }
+
+//       // Upload the new avatar to Cloudinary
+//       const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+//         folder: "avatars",
+//         width: 150,
+//         crop: "scale",
+//       });
+
+//       newUserData.avatar = {
+//         public_id: myCloud.public_id,
+//         url: myCloud.secure_url,
+//       };
+//     } else if (!user.avatar) {
+//       // If no avatar is provided and the user doesn't have one, set a default avatar
+//       newUserData.avatar = {
+//         public_id: "default_avatar_public_id", // Replace with actual default public ID
+//         url: "https://res.cloudinary.com/dmsyppekz/image/upload/v1727187600/Profile_gslglc.png", // Default avatar URL
+//       };
 //     }
 
-//     // Upload new avatar to Cloudinary
-//     const myCloud = await cloudinary.v2.uploader.upload(req.file.path, {
-//       folder: "avatars",
-//       width: 150,
-//       crop: "scale",
+//     // Update the user's profile data in the database
+//     const updatedUser = await User.findByIdAndUpdate(req.user.id, newUserData, {
+//       new: true,
+//       runValidators: true,
+//       useFindAndModify: false,
 //     });
 
-//     newUserData.avatar = {
-//       public_id: myCloud.public_id,
-//       url: myCloud.secure_url,
-//     };
+//     // Send response
+//     res.status(200).json({
+//       success: true,
+//       user: updatedUser, // Return the updated user object
+//     });
+//   } catch (error) {
+//     // Handle errors gracefully
+//     console.error("Error updating profile:", error); // Log the error for debugging
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error", // Return a clear error message
+//     });
 //   }
-
-//   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
-//     new: true,
-//     runValidators: true,
-//     useFindAndModify: false,
-//   });
-
-//   res.status(200).json({
-//     success: true,
-//   });
 // });
+
 exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
     name: req.body.name,
@@ -279,8 +264,14 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 
     // Check if a new avatar is provided in the request body
     if (req.body.avatar) {
+      console.log("Avatar provided in request body:", req.body.avatar); // Debugging line
+
       // Ensure the user has an avatar before trying to delete it
       if (user.avatar && user.avatar.public_id) {
+        console.log(
+          "Deleting old avatar from Cloudinary:",
+          user.avatar.public_id
+        ); // Debugging line
         await cloudinary.v2.uploader.destroy(user.avatar.public_id);
       }
 
@@ -290,6 +281,8 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
         width: 150,
         crop: "scale",
       });
+
+      console.log("Cloudinary upload response:", myCloud); // Debugging line
 
       newUserData.avatar = {
         public_id: myCloud.public_id,
