@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    build: ./backend
+    image: neeraj46665/ecommerce-backend:latest
     container_name: ecommerce-backend
     restart: always
     ports:
@@ -10,21 +10,20 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
-      - MONGO_URI=${MONGO_URI}
-      - JWT_SECRET=${JWT_SECRET}
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-      # Add other environment variables as needed
+      - MONGO_URI=mongodb://ecommerce-mongo:27017/ecommerce  # Hardcoded URL
+      - JWT_SECRET=${JWT_SECRET}  # Dynamic secret
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}  # Dynamic secret
     depends_on:
       - mongo
 
   frontend:
-    build: ./frontend
+    image: neeraj46665/ecommerce-frontend:latest
     container_name: ecommerce-frontend
     restart: always
     ports:
       - "80:80"
     environment:
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - REACT_APP_API_URL=http://localhost:4000  # Hardcoded URL
     depends_on:
       - backend
 
